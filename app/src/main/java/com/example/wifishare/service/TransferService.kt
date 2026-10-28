@@ -26,7 +26,7 @@ class TransferService : Service() {
         )
         startForeground(Constants.NOTIFICATION_ID_TRANSFER, n)
         Logger.d("TransferService started")
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {

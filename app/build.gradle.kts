@@ -1,6 +1,14 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+}
+
+// بيانات التوقيع من keystore.properties (خارج Git)
+val ksProps = Properties().apply {
+    val f = rootProject.file("keystore.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
 }
 
 android {
@@ -16,9 +24,24 @@ android {
         resourceConfigurations += listOf("en", "ar")
     }
 
+    signingConfigs {
+        create("release") {
+            if (ksProps.containsKey("storeFile")) {
+                storeFile = file(ksProps["storeFile"] as String)
+                storePassword = ksProps["storePassword"] as String
+                keyAlias = ksProps["keyAlias"] as String
+                keyPassword = ksProps["keyPassword"] as String
+            }
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            if (ksProps.containsKey("storeFile")) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }

@@ -2,6 +2,8 @@ package com.example.wifishare.ui.viewer
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +11,10 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.example.wifishare.databinding.ActivityImageViewerBinding
 
 class ImageViewerActivity : AppCompatActivity() {
@@ -31,7 +37,10 @@ class ImageViewerActivity : AppCompatActivity() {
         val uri = intent.getParcelableExtra<Uri>(EXTRA_URI) ?: return finish()
         supportActionBar?.title = intent.getStringExtra(EXTRA_NAME) ?: ""
 
-        binding.ivImage.setImageURI(uri)
+        lifecycleScope.launch {
+            val bmp = withContext(Dispatchers.IO) { runCatching { decodeScaled(uri, 2048) }.getOrNull() }
+            if (bmp != null) binding.ivImage.setImageBitmap(bmp) else finish()
+        }
 
         scaleDetector = ScaleGestureDetector(this, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
@@ -57,6 +66,17 @@ class ImageViewerActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    /** فك الصورة بحجم أقصى maxPx لتفادي OOM. */
+    private fun decodeScaled(uri: Uri, maxPx: Int): Bitmap? {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+        var sample = 1
+        while (bounds.outWidth / sample > maxPx || bounds.outHeight / sample > maxPx) sample *= 2
+        val opts = BitmapFactory.Options().apply { inSampleSize = sample }
+        return contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, opts) }
     }
 
     private fun applyMatrix() {

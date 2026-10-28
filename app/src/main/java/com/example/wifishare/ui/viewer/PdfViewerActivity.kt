@@ -12,6 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wifishare.databinding.ActivityPdfViewerBinding
@@ -45,7 +49,7 @@ class PdfViewerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        runCatching { renderer?.close() }
+        runCatching { renderer?.let { r -> synchronized(r) { r.close() } } }
         runCatching { pfd?.close() }
         renderer = null
         pfd = null
@@ -68,13 +72,33 @@ class PdfViewerActivity : AppCompatActivity() {
 
         inner class VH(private val b: ItemPdfPageBinding) : RecyclerView.ViewHolder(b.root) {
             fun bind(index: Int) {
-                val page = renderer.openPage(index)
-                val scale = 2
-                val bmp = Bitmap.createBitmap(page.width * scale, page.height * scale, Bitmap.Config.ARGB_8888)
-                bmp.eraseColor(Color.WHITE)
-                page.render(bmp, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
-                b.ivPage.setImageBitmap(bmp)
-                page.close()
+                val ctx = b.root.context
+                val w = ctx.resources.displayMetrics.widthPixels
+                b.ivPage.setImageBitmap(null)
+                val scope = (ctx as? AppCompatActivity)?.lifecycleScope ?: return
+                scope.launch {
+                    val bmp = withContext(Dispatchers.Default) {
+                        try {
+                            // PdfRenderer يسمح بصفحة مفتوحة واحدة فقط في وقت واحد
+                            synchronized(renderer) {
+                                val page = renderer.openPage(index)
+                                try {
+                                    val ratio = w.toFloat() / page.width
+                                    val h = (page.height * ratio).toInt().coerceIn(1, 4096)
+                                    val out = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+                                    out.eraseColor(Color.WHITE)
+                                    page.render(out, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+                                    out
+                                } finally {
+                                    page.close()
+                                }
+                            }
+                        } catch (_: Throwable) {
+                            null
+                        }
+                    }
+                    if (bmp != null && bindingAdapterPosition == index) b.ivPage.setImageBitmap(bmp)
+                }
             }
         }
     }
