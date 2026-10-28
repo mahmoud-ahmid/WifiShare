@@ -30,13 +30,17 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>({ i, p, a -> Frag
     private val hostIp: String by lazy {
         requireArguments().getString(ARG_HOST_IP).orEmpty()
     }
+    private val token: String by lazy {
+        requireArguments().getString(ARG_TOKEN).orEmpty()
+    }
 
     private val viewModel: TransferViewModel by viewModels {
         TransferViewModel.Factory(
             application = requireActivity().application,
             container = (requireActivity().application as WifiShareApp).container,
             direction = direction,
-            hostIp = hostIp
+            hostIp = hostIp,
+            token = token
         )
     }
 
@@ -130,5 +134,6 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>({ i, p, a -> Frag
     companion object {
         const val ARG_MODE = "mode"
         const val ARG_HOST_IP = "hostIp"
+        const val ARG_TOKEN = "token"
     }
 }

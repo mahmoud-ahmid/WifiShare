@@ -26,7 +26,7 @@ class TransferClient(private val contentResolver: ContentResolver) {
     private val _progress = MutableStateFlow(TransferProgress(direction = TransferDirection.SEND))
     val progress: StateFlow<TransferProgress> = _progress.asStateFlow()
 
-    suspend fun send(hostIp: String, files: List<Uri>): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun send(hostIp: String, files: List<Uri>, token: String = ""): Result<Unit> = withContext(Dispatchers.IO) {
         var socket: Socket? = null
         try {
             if (hostIp.isBlank()) throw IOException("Empty receiver IP")
@@ -41,10 +41,18 @@ class TransferClient(private val contentResolver: ContentResolver) {
             val out = TransferProtocol.wrapOut(socket.getOutputStream())
             val input = TransferProtocol.wrapIn(socket.getInputStream())
 
+            // مصافحة + توكن الجلسة
+            TransferProtocol.writeHello(out, token)
+            if (input.readByte().toInt() != 1) {
+                throw IOException("Receiver refused the connection (invalid or expired code)")
+            }
+
             val metas = files.map { uri ->
+                var size = querySize(uri)
+                if (size <= 0L) size = countBytes(uri)   // الحجم مجهول: احسبه فعليًا
                 FileMeta(
                     name = queryName(uri) ?: "file_${System.currentTimeMillis()}",
-                    size = querySize(uri)
+                    size = size
                 )
             }
             val totalBytes = metas.sumOf { it.size }
@@ -76,7 +84,7 @@ class TransferClient(private val contentResolver: ContentResolver) {
                         coroutineContext.ensureActive()
                         val toRead = minOf(buffer.size.toLong(), remaining).toInt()
                         val read = rawIn.read(buffer, 0, toRead)
-                        if (read <= 0) break
+                        if (read <= 0) throw IOException("Source shorter than declared: ${meta.name}")
                         out.write(buffer, 0, read)
                         remaining -= read
                         sentBytes += read
@@ -109,6 +117,18 @@ class TransferClient(private val contentResolver: ContentResolver) {
             try { socket?.close() } catch (_: IOException) {}
         }
     }
+
+    private fun countBytes(uri: Uri): Long =
+        contentResolver.openInputStream(uri)?.use { s ->
+            var n = 0L
+            val b = ByteArray(64 * 1024)
+            while (true) {
+                val r = s.read(b)
+                if (r < 0) break
+                n += r
+            }
+            n
+        } ?: 0L
 
     private fun queryName(uri: Uri): String? {
         val proj = arrayOf(android.provider.OpenableColumns.DISPLAY_NAME)

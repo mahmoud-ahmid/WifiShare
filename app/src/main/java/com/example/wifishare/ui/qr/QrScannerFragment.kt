@@ -49,7 +49,8 @@ class QrScannerFragment : BaseFragment<FragmentQrScannerBinding>(
                 R.id.action_qrScanner_to_transfer,
                 bundleOf(
                     TransferFragment.ARG_MODE to "SEND",
-                    TransferFragment.ARG_HOST_IP to p.ip
+                    TransferFragment.ARG_HOST_IP to p.ip,
+                    TransferFragment.ARG_TOKEN to p.token
                 )
             )
         }

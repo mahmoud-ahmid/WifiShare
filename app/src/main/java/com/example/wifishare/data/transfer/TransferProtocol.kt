@@ -21,6 +21,7 @@ object TransferProtocol {
     const val END_MARKER = "__END__"
     const val CONFIRM_OK: Int = 1
     const val CONFIRM_FAIL: Int = 0
+    const val MAGIC = "WSHARE1"
 
     fun wrapOut(raw: OutputStream): DataOutputStream =
         DataOutputStream(BufferedOutputStream(raw, 32 * 1024))
@@ -54,4 +55,16 @@ object TransferProtocol {
     }
 
     fun readConfirm(input: DataInputStream): Boolean = input.readByte().toInt() == CONFIRM_OK
+
+    fun writeHello(out: DataOutputStream, token: String) {
+        out.writeUTF(MAGIC)
+        out.writeUTF(token)
+        out.flush()
+    }
+
+    /** يرجع التوكن، أو null لو الـ magic غير صحيح. */
+    fun readHello(input: DataInputStream): String? {
+        if (input.readUTF() != MAGIC) return null
+        return input.readUTF()
+    }
 }

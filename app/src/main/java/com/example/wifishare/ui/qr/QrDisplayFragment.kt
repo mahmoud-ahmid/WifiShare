@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.wifishare.R
 import com.example.wifishare.WifiShareApp
 import com.example.wifishare.core.Constants
+import com.example.wifishare.core.SessionToken
 import com.example.wifishare.data.qr.QrEncoder
 import com.example.wifishare.data.qr.QrPayload
 import com.example.wifishare.data.wifi.WifiP2pState
@@ -28,11 +29,12 @@ class QrDisplayFragment : BaseFragment<FragmentQrDisplayBinding>(
             else -> "192.168.49.1"
         }
         val deviceName = (Build.MODEL ?: "Android").take(20)
-        val text = QrPayload(name = deviceName, ip = ip, port = Constants.TRANSFER_PORT).encode()
+        val token = SessionToken.regenerate()
+        val text = QrPayload(name = deviceName, ip = ip, port = Constants.TRANSFER_PORT, token = token).encode()
 
         binding.ivQr.setImageBitmap(QrEncoder.encode(text, 720))
         binding.tvDeviceName.text = getString(R.string.qr_display_device, deviceName)
-        binding.tvPayload.text = text
+        binding.tvPayload.visibility = View.GONE   // النص الخام يحتوي التوكن
 
         binding.btnStartReceive.setOnClickListener {
             findNavController().navigate(

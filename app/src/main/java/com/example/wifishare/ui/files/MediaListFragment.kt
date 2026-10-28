@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wifishare.R
 import com.example.wifishare.WifiShareApp
+import com.example.wifishare.core.SafeName
 import com.example.wifishare.core.toast
 import com.example.wifishare.ui.viewer.PdfViewerActivity
 import com.example.wifishare.ui.viewer.ImageViewerActivity
@@ -379,10 +380,15 @@ class MediaListFragment : BaseFragment<FragmentMediaListBinding>(
         dialog.show()
     }
 
-    private fun performRename(item: MediaItem, newName: String) {
+    private fun performRename(item: MediaItem, rawName: String) {
+        val newName = SafeName.sanitize(rawName)
         if (item.source == Source.RECEIVED && item.filePath != null) {
             val oldFile = File(item.filePath)
             val target = File(oldFile.parentFile, newName)
+            if (!SafeName.isInside(oldFile.parentFile!!, target)) {
+                requireContext().toast(getString(R.string.files_rename_failed))
+                return
+            }
             if (target.exists()) {
                 requireContext().toast(getString(R.string.files_rename_exists))
                 return

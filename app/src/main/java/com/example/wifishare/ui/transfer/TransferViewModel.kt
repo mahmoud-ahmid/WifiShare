@@ -28,7 +28,8 @@ class TransferViewModel(
     app: Application,
     private val container: AppContainer,
     val direction: TransferDirection,
-    private val hostIp: String
+    private val hostIp: String,
+    private val token: String = ""
 ) : AndroidViewModel(app) {
 
     private val _progress = MutableStateFlow(TransferProgress(direction = direction))
@@ -123,7 +124,7 @@ class TransferViewModel(
         startForegroundSafely()
         viewModelScope.launch {
             Logger.i("Sending ${uris.size} file(s) to $hostIp")
-            val result = container.transferClient.send(hostIp, uris)
+            val result = container.transferClient.send(hostIp, uris, token)
             running = false
             val p = _progress.value
             if (p.currentFileName.isNotBlank()) {
@@ -192,12 +193,13 @@ class TransferViewModel(
         private val application: Application,
         private val container: AppContainer,
         private val direction: TransferDirection,
-        private val hostIp: String
+        private val hostIp: String,
+        private val token: String = ""
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
             require(modelClass.isAssignableFrom(TransferViewModel::class.java))
-            return TransferViewModel(application, container, direction, hostIp) as T
+            return TransferViewModel(application, container, direction, hostIp, token) as T
         }
     }
 }

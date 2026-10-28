@@ -9,6 +9,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.wifishare.R
 import com.example.wifishare.WifiShareApp
+import com.example.wifishare.core.SessionToken
 import com.example.wifishare.core.toast
 import com.example.wifishare.databinding.FragmentSettingsBinding
 import com.example.wifishare.ui.common.BaseFragment
@@ -84,12 +85,13 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(
                 val uri = FileProvider.getUriForFile(
                     ctx, "${ctx.packageName}.fileprovider", testFile
                 )
+                SessionToken.regenerate()
                 val receiveDeferred = async {
                     delay(300)
                     container.transferServer.receiveOnce()
                 }
                 delay(900)
-                val sendResult = container.transferClient.send("127.0.0.1", listOf(uri))
+                val sendResult = container.transferClient.send("127.0.0.1", listOf(uri), SessionToken.current)
                 val receiveResult = receiveDeferred.await()
                 val elapsed = System.currentTimeMillis() - startedAt
                 when {
