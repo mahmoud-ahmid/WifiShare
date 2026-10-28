@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/home_welcome" android:textSize="30sp" android:textStyle="bold" />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="2dp" android:text="@string/home_subtitle"
+            android:textSize="14sp" android:textColor="@color/on_surface_muted" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardPermissions"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" android:clickable="true" android:focusable="true"
+            app:cardCornerRadius="12dp" app:cardBackgroundColor="@color/card_qr_bg" app:cardElevation="0dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:padding="14dp" android:gravity="center_vertical">
+                <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                    android:src="@drawable/ic_settings" app:tint="@color/icon_qr" />
+                <TextView android:id="@+id/tvPermissionStatus"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:layout_marginStart="10dp"
+                    android:text="@string/home_perm_missing" android:textSize="14sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardSend"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" android:clickable="true" android:focusable="true"
+            app:cardCornerRadius="16dp" app:cardBackgroundColor="@color/card_send_bg" app:cardElevation="0dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:padding="18dp" android:gravity="center_vertical">
+                <ImageView android:layout_width="36dp" android:layout_height="36dp"
+                    android:src="@drawable/ic_send" app:tint="@color/icon_send" />
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:layout_marginStart="14dp" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/home_send_title" android:textSize="18sp" android:textStyle="bold" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp" android:text="@string/home_send_subtitle"
+                        android:textSize="12sp" android:textColor="@color/on_surface_muted" />
+                </LinearLayout>
+                <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                    android:src="@drawable/ic_chevron_right" app:tint="@color/on_surface_muted" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardReceive"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" android:clickable="true" android:focusable="true"
+            app:cardCornerRadius="16dp" app:cardBackgroundColor="@color/card_receive_bg" app:cardElevation="0dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:padding="18dp" android:gravity="center_vertical">
+                <ImageView android:layout_width="36dp" android:layout_height="36dp"
+                    android:src="@drawable/ic_receive" app:tint="@color/icon_receive" />
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:layout_marginStart="14dp" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/home_receive_title" android:textSize="18sp" android:textStyle="bold" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp" android:text="@string/home_receive_subtitle"
+                        android:textSize="12sp" android:textColor="@color/on_surface_muted" />
+                </LinearLayout>
+                <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                    android:src="@drawable/ic_chevron_right" app:tint="@color/on_surface_muted" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardQr"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" android:clickable="true" android:focusable="true"
+            app:cardCornerRadius="16dp" app:cardBackgroundColor="@color/card_qr_bg" app:cardElevation="0dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:padding="18dp" android:gravity="center_vertical">
+                <ImageView android:layout_width="36dp" android:layout_height="36dp"
+                    android:src="@drawable/ic_qr" app:tint="@color/icon_qr" />
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:layout_marginStart="14dp" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/home_qr_title" android:textSize="18sp" android:textStyle="bold" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp" android:text="@string/home_qr_subtitle"
+                        android:textSize="12sp" android:textColor="@color/on_surface_muted" />
+                </LinearLayout>
+                <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                    android:src="@drawable/ic_scan" app:tint="@color/icon_qr" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</ScrollView>

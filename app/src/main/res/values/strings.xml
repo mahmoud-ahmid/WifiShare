@@ -1,0 +1,145 @@
+<resources>
+    <string name="app_name">WifiShare</string>
+
+    <string name="nav_home">Home</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+
+    <string name="home_welcome">WifiShare</string>
+    <string name="home_subtitle">Fast, private file transfer</string>
+    <string name="home_send_title">Send files</string>
+    <string name="home_send_subtitle">Pick files and choose a nearby device</string>
+    <string name="home_receive_title">Receive files</string>
+    <string name="home_receive_subtitle">Show your QR or find the sender</string>
+    <string name="home_qr_title">Scan QR code</string>
+    <string name="home_qr_subtitle">Connect instantly without searching</string>
+    <string name="home_perm_granted">All permissions granted</string>
+    <string name="home_perm_missing">Tap to grant required permissions</string>
+
+    <string name="history_title">History</string>
+    <string name="history_empty_title">No transfers yet</string>
+    <string name="history_empty_hint">Your past transfers will appear here.</string>
+    <string name="history_no_file">No file associated with this record</string>
+    <string name="history_file_missing">File no longer exists</string>
+    <string name="history_open_with">Open with…</string>
+    <string name="history_cant_open">Cannot open: %1$s</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_download_folder">Download folder</string>
+    <string name="settings_download_folder_desc">Download/WifiShare</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications_desc">Show transfer progress</string>
+    <string name="settings_clear_history">Clear history</string>
+    <string name="settings_clear_history_desc">Remove all past transfers</string>
+    <string name="settings_clear_done">History cleared</string>
+    <string name="settings_about">About WifiShare</string>
+    <string name="settings_about_desc">Version 0.4.0</string>
+    <string name="settings_privacy">Privacy</string>
+    <string name="settings_privacy_desc">No ads. No tracking.</string>
+
+    <string name="settings_selftest">Self-test (loopback)</string>
+    <string name="settings_selftest_idle">Verify transfer engine on this device</string>
+    <string name="settings_selftest_running">Running self-test…</string>
+    <string name="settings_selftest_passed">Passed! %1$d bytes in %2$d ms</string>
+    <string name="settings_selftest_failed">Failed: %1$s</string>
+
+    <string name="qr_display_title">My QR code</string>
+    <string name="qr_display_hint">Ask the sender to scan this code</string>
+    <string name="qr_display_device">Device: %1$s</string>
+    <string name="qr_display_start_receive">Start receiving</string>
+
+    <string name="qr_scanner_title">Scan QR</string>
+    <string name="qr_scanner_hint">Point your camera at the sender\'s QR code</string>
+    <string name="qr_scanner_open">Open camera</string>
+    <string name="qr_scanner_prompt">Scan the receiver\'s QR code</string>
+    <string name="qr_scanner_cancelled">Scan cancelled</string>
+    <string name="qr_scanner_invalid">Not a WifiShare QR code</string>
+    <string name="qr_scanner_found">Found: %1$s\nIP: %2$s\nPort: %3$d</string>
+    <string name="qr_scanner_connect">Connect &amp; send</string>
+
+    <string name="discover_title">Nearby devices</string>
+    <string name="discover_status_idle">Tap "Start discovery" to scan</string>
+    <string name="discover_status_wifi_disabled">Wi-Fi is disabled</string>
+    <string name="discover_status_not_supported">Wi-Fi Direct not supported</string>
+    <string name="discover_status_discovering">Discovering nearby devices…</string>
+    <string name="discover_status_peers">Found %1$d devices</string>
+    <string name="discover_status_connecting">Connecting to %1$s…</string>
+    <string name="discover_status_connected">Connected. Group owner: %1$s</string>
+    <string name="discover_status_failed">Error: %1$s</string>
+    <string name="discover_start">Start discovery</string>
+    <string name="discover_stop">Stop discovery</string>
+    <string name="discover_continue">Continue to transfer</string>
+    <string name="discover_disconnect">Disconnect</string>
+    <string name="connecting_to">Connecting to %1$s…</string>
+
+    <string name="transfer_title">Transfer</string>
+    <string name="transfer_mode_send">Sending files</string>
+    <string name="transfer_mode_receive">Receiving files</string>
+    <string name="transfer_host">Peer: %1$s</string>
+    <string name="transfer_waiting">Waiting for connection…</string>
+    <string name="transfer_waiting_for_sender">Waiting for the sender to start…</string>
+    <string name="transfer_pick_prompt">Pick files to start sending</string>
+    <string name="transfer_pick_button">Pick files</string>
+    <string name="transfer_running">Transferring…</string>
+    <string name="transfer_done">Transfer complete</string>
+    <string name="transfer_done_button">Done</string>
+    <string name="transfer_error">Error: %1$s</string>
+    <string name="transfer_speed">Speed: %1$.1f MB/s</string>
+    <string name="transfer_eta">ETA: %1$d s</string>
+    <string name="transfer_no_files">No files selected</string>
+    <string name="transfer_saved">Saved to:\n%1$s</string>
+
+    <string name="notif_channel_name">File transfer</string>
+    <string name="notif_transfer_running">File transfer in progress</string>
+
+    <string name="common_back">Back</string>
+    <string name="coming_soon">Coming soon</string>
+    <string name="nav_files">Files</string>
+    <string name="files_title">Received files</string>
+    <string name="files_summary_empty">No files yet</string>
+    <string name="files_empty_title">Nothing to show</string>
+    <string name="files_empty_hint">Files you receive will appear here.</string>
+    <string name="files_action_open">Open</string>
+    <string name="files_action_share">Share</string>
+    <string name="files_action_info">Info</string>
+    <string name="files_action_delete">Delete</string>
+    <string name="files_open_with">Open with…</string>
+    <string name="files_share_with">Share with…</string>
+    <string name="files_cant_open">Cannot open: %1$s</string>
+    <string name="files_cant_share">Cannot share: %1$s</string>
+    <string name="files_delete_title">Delete file?</string>
+    <string name="files_delete_confirm">Delete "%1$s" permanently?</string>
+    <string name="files_deleted">File deleted</string>
+    <string name="files_delete_failed">Delete failed</string>
+    <string name="tab_received">Received</string>
+    <string name="tab_images">Images</string>
+    <string name="tab_videos">Videos</string>
+    <string name="tab_audio">Audio</string>
+    <string name="tab_documents">Documents</string>
+    <string name="files_action_send">Send via WifiShare</string>
+    <string name="files_send_ready">Files ready — open Send and pick a device</string>
+    <string name="files_summary">%1$d files · %2$s</string>
+    <string name="files_info">Name: %1$s\nSize: %2$s\nType: %3$s\nPath/URI: %4$s</string>
+    <string name="files_more">More options</string>
+    <string name="files_selected_count">%1$d selected</string>
+    <string name="files_action_rename">Rename</string>
+    <string name="files_rename_title">Rename file</string>
+    <string name="files_renamed">Renamed successfully</string>
+    <string name="files_rename_failed">Rename failed</string>
+    <string name="files_rename_exists">A file with that name already exists</string>
+    <string name="files_delete_confirm_multi">Delete %1$d files permanently?</string>
+    <string name="files_deleted_multi">Deleted %1$d files</string>
+    <string name="files_delete_partial">Deleted %1$d, failed %2$d</string>
+    <string name="media_video_disabled">Video playback is disabled in this app</string>
+    <string name="files_action_ringtone">Set as ringtone</string>
+    <string name="files_action_notification">Set as notification sound</string>
+    <string name="files_action_alarm">Set as alarm sound</string>
+    <string name="files_grant_write_title">Permission required</string>
+    <string name="files_grant_write_message">To change system sounds, allow WifiShare to modify system settings.</string>
+    <string name="files_ringtone_set">Ringtone set</string>
+    <string name="files_notification_set">Notification sound set</string>
+    <string name="files_alarm_set">Alarm sound set</string>
+    <string name="files_setting_failed">Failed: %1$s</string>
+    <string name="media_cant_play">Cannot play this file</string>
+    <string name="media_cant_open">Cannot open this file</string>
+</resources>

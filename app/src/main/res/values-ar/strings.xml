@@ -1,0 +1,145 @@
+<resources>
+    <string name="app_name">WifiShare</string>
+
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_history">السجل</string>
+    <string name="nav_settings">الإعدادات</string>
+
+    <string name="home_welcome">WifiShare</string>
+    <string name="home_subtitle">نقل ملفات سريع وآمن</string>
+    <string name="home_send_title">إرسال ملفات</string>
+    <string name="home_send_subtitle">اختر الملفات وجهازًا قريبًا</string>
+    <string name="home_receive_title">استقبال ملفات</string>
+    <string name="home_receive_subtitle">اعرض رمز QR أو ابحث عن المرسل</string>
+    <string name="home_qr_title">مسح رمز QR</string>
+    <string name="home_qr_subtitle">اتصل فورًا بدون بحث</string>
+    <string name="home_perm_granted">كل الصلاحيات ممنوحة</string>
+    <string name="home_perm_missing">اضغط لمنح الصلاحيات المطلوبة</string>
+
+    <string name="history_title">السجل</string>
+    <string name="history_empty_title">لا توجد عمليات بعد</string>
+    <string name="history_empty_hint">ستظهر عمليات النقل السابقة هنا.</string>
+    <string name="history_no_file">لا يوجد ملف مرتبط بهذا السجل</string>
+    <string name="history_file_missing">الملف لم يعد موجودًا</string>
+    <string name="history_open_with">افتح بـ…</string>
+    <string name="history_cant_open">تعذّر الفتح: %1$s</string>
+
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_download_folder">مجلد التنزيل</string>
+    <string name="settings_download_folder_desc">Download/WifiShare</string>
+    <string name="settings_notifications">الإشعارات</string>
+    <string name="settings_notifications_desc">إظهار تقدم النقل</string>
+    <string name="settings_clear_history">مسح السجل</string>
+    <string name="settings_clear_history_desc">حذف كل عمليات النقل السابقة</string>
+    <string name="settings_clear_done">تم مسح السجل</string>
+    <string name="settings_about">حول WifiShare</string>
+    <string name="settings_about_desc">الإصدار 0.4.0</string>
+    <string name="settings_privacy">الخصوصية</string>
+    <string name="settings_privacy_desc">لا إعلانات. لا تتبع.</string>
+
+    <string name="settings_selftest">اختبار ذاتي (Loopback)</string>
+    <string name="settings_selftest_idle">تحقق من محرك النقل على هذا الجهاز</string>
+    <string name="settings_selftest_running">جارٍ الاختبار…</string>
+    <string name="settings_selftest_passed">نجح! %1$d بايت في %2$d مللي ثانية</string>
+    <string name="settings_selftest_failed">فشل: %1$s</string>
+
+    <string name="qr_display_title">رمز QR الخاص بي</string>
+    <string name="qr_display_hint">اطلب من المرسل مسح هذا الرمز</string>
+    <string name="qr_display_device">الجهاز: %1$s</string>
+    <string name="qr_display_start_receive">بدء الاستقبال</string>
+
+    <string name="qr_scanner_title">مسح QR</string>
+    <string name="qr_scanner_hint">وجّه الكاميرا نحو رمز المرسل</string>
+    <string name="qr_scanner_open">فتح الكاميرا</string>
+    <string name="qr_scanner_prompt">وجّه الكاميرا نحو رمز المستقبِل</string>
+    <string name="qr_scanner_cancelled">أُلغي المسح</string>
+    <string name="qr_scanner_invalid">ليس رمز WifiShare</string>
+    <string name="qr_scanner_found">وُجد: %1$s\nIP: %2$s\nالمنفذ: %3$d</string>
+    <string name="qr_scanner_connect">اتصل وأرسل</string>
+
+    <string name="discover_title">الأجهزة القريبة</string>
+    <string name="discover_status_idle">اضغط "بدء الاكتشاف"</string>
+    <string name="discover_status_wifi_disabled">الواي فاي معطل</string>
+    <string name="discover_status_not_supported">Wi-Fi Direct غير مدعوم</string>
+    <string name="discover_status_discovering">جارٍ البحث…</string>
+    <string name="discover_status_peers">تم العثور على %1$d جهاز</string>
+    <string name="discover_status_connecting">جارٍ الاتصال بـ %1$s…</string>
+    <string name="discover_status_connected">متصل. مالك المجموعة: %1$s</string>
+    <string name="discover_status_failed">خطأ: %1$s</string>
+    <string name="discover_start">بدء الاكتشاف</string>
+    <string name="discover_stop">إيقاف الاكتشاف</string>
+    <string name="discover_continue">متابعة للنقل</string>
+    <string name="discover_disconnect">قطع الاتصال</string>
+    <string name="connecting_to">جارٍ الاتصال بـ %1$s…</string>
+
+    <string name="transfer_title">النقل</string>
+    <string name="transfer_mode_send">إرسال ملفات</string>
+    <string name="transfer_mode_receive">استقبال ملفات</string>
+    <string name="transfer_host">الجهاز النظير: %1$s</string>
+    <string name="transfer_waiting">في انتظار الاتصال…</string>
+    <string name="transfer_waiting_for_sender">في انتظار بدء الإرسال…</string>
+    <string name="transfer_pick_prompt">اختر ملفات لبدء الإرسال</string>
+    <string name="transfer_pick_button">اختيار الملفات</string>
+    <string name="transfer_running">جارٍ النقل…</string>
+    <string name="transfer_done">اكتمل النقل</string>
+    <string name="transfer_done_button">تم</string>
+    <string name="transfer_error">خطأ: %1$s</string>
+    <string name="transfer_speed">السرعة: %1$.1f ميجا/ث</string>
+    <string name="transfer_eta">المتبقي: %1$d ث</string>
+    <string name="transfer_no_files">لم تُختر ملفات</string>
+    <string name="transfer_saved">تم الحفظ في:\n%1$s</string>
+
+    <string name="notif_channel_name">نقل الملفات</string>
+    <string name="notif_transfer_running">جارٍ نقل الملفات</string>
+
+    <string name="common_back">رجوع</string>
+    <string name="coming_soon">قريبًا</string>
+    <string name="nav_files">الملفات</string>
+    <string name="files_title">الملفات المستلمة</string>
+    <string name="files_summary_empty">لا توجد ملفات بعد</string>
+    <string name="files_empty_title">لا شيء للعرض</string>
+    <string name="files_empty_hint">الملفات المستلمة ستظهر هنا.</string>
+    <string name="files_action_open">فتح</string>
+    <string name="files_action_share">مشاركة</string>
+    <string name="files_action_info">معلومات</string>
+    <string name="files_action_delete">حذف</string>
+    <string name="files_open_with">افتح بـ…</string>
+    <string name="files_share_with">شارك بـ…</string>
+    <string name="files_cant_open">تعذّر الفتح: %1$s</string>
+    <string name="files_cant_share">تعذّرت المشاركة: %1$s</string>
+    <string name="files_delete_title">حذف الملف؟</string>
+    <string name="files_delete_confirm">حذف "%1$s" نهائيًا؟</string>
+    <string name="files_deleted">تم حذف الملف</string>
+    <string name="files_delete_failed">فشل الحذف</string>
+    <string name="tab_received">مستلمة</string>
+    <string name="tab_images">صور</string>
+    <string name="tab_videos">فيديو</string>
+    <string name="tab_audio">صوت</string>
+    <string name="tab_documents">مستندات</string>
+    <string name="files_action_send">إرسال بواسطة WifiShare</string>
+    <string name="files_send_ready">الملفات جاهزة — افتح الإرسال واختر جهازًا</string>
+    <string name="files_summary">%1$d ملف · %2$s</string>
+    <string name="files_info">الاسم: %1$s\nالحجم: %2$s\nالنوع: %3$s\nالمسار/URI: %4$s</string>
+    <string name="files_more">خيارات</string>
+    <string name="files_selected_count">تم تحديد %1$d</string>
+    <string name="files_action_rename">إعادة تسمية</string>
+    <string name="files_rename_title">إعادة تسمية الملف</string>
+    <string name="files_renamed">تمت إعادة التسمية</string>
+    <string name="files_rename_failed">فشلت إعادة التسمية</string>
+    <string name="files_rename_exists">يوجد ملف آخر بنفس الاسم</string>
+    <string name="files_delete_confirm_multi">حذف %1$d ملفات نهائيًا؟</string>
+    <string name="files_deleted_multi">تم حذف %1$d ملفات</string>
+    <string name="files_delete_partial">حُذف %1$d، فشل %2$d</string>
+    <string name="media_video_disabled">تشغيل الفيديو معطّل في هذا التطبيق</string>
+    <string name="files_action_ringtone">تعيين كنغمة رنين</string>
+    <string name="files_action_notification">تعيين كصوت إشعار</string>
+    <string name="files_action_alarm">تعيين كصوت منبه</string>
+    <string name="files_grant_write_title">صلاحية مطلوبة</string>
+    <string name="files_grant_write_message">لتغيير أصوات النظام، اسمح لـ WifiShare بتعديل إعدادات النظام.</string>
+    <string name="files_ringtone_set">تم تعيين النغمة</string>
+    <string name="files_notification_set">تم تعيين صوت الإشعار</string>
+    <string name="files_alarm_set">تم تعيين صوت المنبه</string>
+    <string name="files_setting_failed">فشل: %1$s</string>
+    <string name="media_cant_play">تعذّر تشغيل هذا الملف</string>
+    <string name="media_cant_open">تعذّر فتح هذا الملف</string>
+</resources>

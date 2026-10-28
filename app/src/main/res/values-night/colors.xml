@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#B4A7FF</color>
+    <color name="on_primary">#1F1459</color>
+    <color name="background">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="surface_variant">#2B2A30</color>
+    <color name="on_surface">#F0F0F0</color>
+    <color name="on_surface_muted">#AAAAAA</color>
+
+    <color name="card_send_bg">#1A2744</color>
+    <color name="card_receive_bg">#1A2E1E</color>
+    <color name="card_qr_bg">#2E1F0E</color>
+
+    <color name="icon_send">#8AB4F8</color>
+    <color name="icon_receive">#81C995</color>
+    <color name="icon_qr">#FFB74D</color>
+
+    <color name="status_ok">#81C995</color>
+    <color name="status_warn">#FFB74D</color>
+    <color name="status_error">#FF6B6B</color>
+
+    <color name="selection_bar_bg">#2B2A30</color>
+    <color name="divider">#333333</color>
+    <color name="ic_launcher_background">#3F3FA0</color>
+</resources>

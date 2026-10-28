@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment android:id="@+id/homeFragment"
+        android:name="com.example.wifishare.ui.home.HomeFragment"
+        android:label="@string/nav_home">
+        <action android:id="@+id/action_home_to_discover"
+            app:destination="@id/discoverFragment" />
+        <action android:id="@+id/action_home_to_qrDisplay"
+            app:destination="@id/qrDisplayFragment" />
+        <action android:id="@+id/action_home_to_qrScanner"
+            app:destination="@id/qrScannerFragment" />
+    </fragment>
+
+
+    <fragment android:id="@+id/filesFragment"
+        android:name="com.example.wifishare.ui.files.FilesFragment"
+        android:label="@string/nav_files" />
+    <fragment android:id="@+id/historyFragment"
+        android:name="com.example.wifishare.ui.history.HistoryFragment"
+        android:label="@string/nav_history" />
+
+    <fragment android:id="@+id/settingsFragment"
+        android:name="com.example.wifishare.ui.settings.SettingsFragment"
+        android:label="@string/nav_settings" />
+
+    <fragment android:id="@+id/discoverFragment"
+        android:name="com.example.wifishare.ui.discover.DiscoverFragment"
+        android:label="@string/discover_title">
+        <action android:id="@+id/action_discover_to_transfer"
+            app:destination="@id/transferFragment" />
+    </fragment>
+
+    <fragment android:id="@+id/transferFragment"
+        android:name="com.example.wifishare.ui.transfer.TransferFragment"
+        android:label="@string/transfer_title">
+        <argument android:name="mode" app:argType="string" android:defaultValue="SEND" />
+        <argument android:name="hostIp" app:argType="string" android:defaultValue="" />
+    </fragment>
+
+    <fragment android:id="@+id/qrDisplayFragment"
+        android:name="com.example.wifishare.ui.qr.QrDisplayFragment"
+        android:label="@string/qr_display_title">
+        <action android:id="@+id/action_qrDisplay_to_transfer"
+            app:destination="@id/transferFragment" />
+    </fragment>
+
+    <fragment android:id="@+id/qrScannerFragment"
+        android:name="com.example.wifishare.ui.qr.QrScannerFragment"
+        android:label="@string/qr_scanner_title">
+        <action android:id="@+id/action_qrScanner_to_transfer"
+            app:destination="@id/transferFragment" />
+    </fragment>
+</navigation>

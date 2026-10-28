@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/settings_title" android:textSize="26sp" android:textStyle="bold" />
+
+        <LinearLayout android:id="@+id/itemDownloadFolder" style="?attr/selectableItemBackground"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:padding="16dp" android:gravity="center_vertical"
+            android:clickable="true" android:focusable="true" android:layout_marginTop="12dp">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_folder" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:layout_marginStart="16dp" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/settings_download_folder" android:textSize="16sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/settings_download_folder_desc" android:textSize="12sp"
+                    android:textColor="@color/on_surface_muted" />
+            </LinearLayout>
+            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/itemNotifications" style="?attr/selectableItemBackground"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:padding="16dp" android:gravity="center_vertical"
+            android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wifi" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:layout_marginStart="16dp" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/settings_notifications" android:textSize="16sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/settings_notifications_desc" android:textSize="12sp"
+                    android:textColor="@color/on_surface_muted" />
+            </LinearLayout>
+            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/itemClearHistory" style="?attr/selectableItemBackground"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:padding="16dp" android:gravity="center_vertical"
+            android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_close" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:layout_marginStart="16dp" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/settings_clear_history" android:textSize="16sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/settings_clear_history_desc" android:textSize="12sp"
+                    android:textColor="@color/on_surface_muted" />
+            </LinearLayout>
+            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/itemSelfTest" style="?attr/selectableItemBackground"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:padding="16dp" android:gravity="center_vertical"
+            android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_send" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:layout_marginStart="16dp" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/settings_selftest" android:textSize="16sp" />
+                <TextView android:id="@+id/tvSelfTestStatus"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="@string/settings_selftest_idle" android:textSize="12sp"
+                    android:textColor="@color/on_surface_muted" />
+            </LinearLayout>
+            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/itemAbout" style="?attr/selectableItemBackground"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:padding="16dp" android:gravity="center_vertical"
+            android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_home" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:layout_marginStart="16dp" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/settings_about" android:textSize="16sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/settings_about_desc" android:textSize="12sp"
+                    android:textColor="@color/on_surface_muted" />
+            </LinearLayout>
+            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/itemPrivacy" style="?attr/selectableItemBackground"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:padding="16dp" android:gravity="center_vertical"
+            android:clickable="true" android:focusable="true">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_check" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:layout_marginStart="16dp" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/settings_privacy" android:textSize="16sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/settings_privacy_desc" android:textSize="12sp"
+                    android:textColor="@color/on_surface_muted" />
+            </LinearLayout>
+            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_chevron_right" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
