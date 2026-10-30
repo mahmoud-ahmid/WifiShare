@@ -3,6 +3,7 @@ package com.example.wifishare.data.transfer
 import android.content.ContentResolver
 import android.net.Uri
 import com.example.wifishare.core.Constants
+import com.example.wifishare.data.wifi.NetworkHolder
 import com.example.wifishare.core.Logger
 import com.example.wifishare.domain.model.FileMeta
 import com.example.wifishare.domain.model.TransferDirection
@@ -32,7 +33,10 @@ class TransferClient(private val contentResolver: ContentResolver) {
             if (hostIp.isBlank()) throw IOException("Empty receiver IP")
             if (files.isEmpty()) throw IOException("No files selected")
 
-            socket = Socket().apply {
+            val boundSocket = try {
+                NetworkHolder.get()?.socketFactory?.createSocket()
+            } catch (e: Exception) { null }
+            socket = (boundSocket ?: Socket()).apply {
                 connect(InetSocketAddress(hostIp, Constants.TRANSFER_PORT), Constants.CONNECT_TIMEOUT_MS.toInt())
                 soTimeout = Constants.SOCKET_TIMEOUT_MS.toInt()
                 tcpNoDelay = true

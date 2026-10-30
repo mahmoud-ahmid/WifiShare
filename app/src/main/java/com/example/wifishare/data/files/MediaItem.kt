@@ -1,5 +1,6 @@
 package com.example.wifishare.data.files
 
+import android.graphics.drawable.Drawable
 import android.net.Uri
 
 data class MediaItem(
@@ -9,7 +10,9 @@ data class MediaItem(
     val mimeType: String,
     val modifiedMs: Long,
     val source: Source,
-    val filePath: String? = null
+    val filePath: String? = null,
+    val appIcon: Drawable? = null,
+    val isInstalledApp: Boolean = false
 )
 
-enum class Source { RECEIVED, IMAGES, VIDEOS, AUDIO, DOCUMENTS }
+enum class Source { RECEIVED, IMAGES, VIDEOS, AUDIO, DOCUMENTS, FOLDERS, APPS }

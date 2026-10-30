@@ -13,8 +13,7 @@ data class QrPayload(
     val ip: String,
     val port: Int,
     val mac: String? = null,
-    val token: String
-) {
+    val token: String = "" ) {
     fun encode(): String = buildString {
         append(PREFIX)
         append(name.replace("|", "_").replace("\n", " "))

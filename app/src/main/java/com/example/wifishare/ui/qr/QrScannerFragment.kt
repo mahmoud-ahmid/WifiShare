@@ -10,6 +10,7 @@ import com.example.wifishare.data.qr.QrPayload
 import com.example.wifishare.databinding.FragmentQrScannerBinding
 import com.example.wifishare.ui.common.BaseFragment
 import com.example.wifishare.ui.transfer.TransferFragment
+import com.example.wifishare.ui.viewer.ScannerActivity
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 
@@ -59,6 +60,7 @@ class QrScannerFragment : BaseFragment<FragmentQrScannerBinding>(
     private fun launchScanner() {
         val options = ScanOptions().apply {
             setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+            setCaptureActivity(ScannerActivity::class.java)
             setPrompt(getString(R.string.qr_scanner_prompt))
             setBeepEnabled(false)
             setOrientationLocked(false)

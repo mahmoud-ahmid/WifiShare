@@ -13,162 +13,241 @@ import androidx.core.content.ContextCompat
 import com.example.wifishare.core.Logger
 import com.example.wifishare.core.PermissionHelper
 import com.example.wifishare.domain.model.PeerDevice
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
-/**
- * غلاف إنتاجي حول WifiP2pManager:
- * - تهيئة idempotent.
- * - BroadcastReceiver آمن (يُلغى في dispose).
- * - دفق حالة موحّد.
- * - معالجة SecurityException في كل نقطة.
- *
- * يُنشأ مرة واحدة في AppContainer (Application scope) ولا يُكرر.
- */
 @SuppressLint("MissingPermission")
 class WifiP2pManagerWrapper(private val appContext: Context) {
 
     private val manager: WifiP2pManager? =
         appContext.getSystemService(Context.WIFI_P2P_SERVICE) as? WifiP2pManager
-
     private var channel: WifiP2pManager.Channel? = null
     private var receiverRegistered = false
+    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     private val _state = MutableStateFlow<WifiP2pState>(WifiP2pState.Idle)
     val state: StateFlow<WifiP2pState> = _state.asStateFlow()
 
+    @Volatile private var p2pEnabled = false
+    @Volatile private var attempts = 0
+    private var discoveryJob: Job? = null
+    private var pollJob: Job? = null
+    @Volatile private var pendingGroupIpCallback: ((String?) -> Unit)? = null
+
     private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
+        override fun onReceive(ctx: Context, intent: Intent) {
             when (intent.action) {
-                WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION -> handleP2pStateChanged(intent)
-                WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION -> handlePeersChanged()
+                WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION -> {
+                    val enabled = intent.getIntExtra(
+                        WifiP2pManager.EXTRA_WIFI_STATE,
+                        WifiP2pManager.WIFI_P2P_STATE_DISABLED
+                    ) == WifiP2pManager.WIFI_P2P_STATE_ENABLED
+                    if (enabled != p2pEnabled) p2pEnabled = enabled
+                    if (!p2pEnabled) _state.value = WifiP2pState.WifiDisabled
+                }
+                WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION -> requestPeers()
                 WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> handleConnectionChanged()
             }
         }
     }
 
-    fun isSupported(): Boolean = manager != null
+    init { initializeChannel(); registerReceiver() }
 
-    private fun ensureInitialized(): Boolean {
-        if (channel != null) return true
+    private fun initializeChannel() {
         val mgr = manager ?: run {
             _state.value = WifiP2pState.NotSupported
-            return false
+            return
         }
         channel = mgr.initialize(appContext, appContext.mainLooper) {
-            Logger.w("WifiP2p channel disconnected")
-            _state.value = WifiP2pState.Failed("Channel disconnected")
+            channel = null
         }
-        registerReceiver()
-        return true
+    }
+
+    private fun ensureChannel(): WifiP2pManager.Channel? {
+        if (channel == null) initializeChannel()
+        return channel
     }
 
     private fun registerReceiver() {
         if (receiverRegistered) return
-        val filter = IntentFilter().apply {
+        val f = IntentFilter().apply {
             addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)
             addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION)
             addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION)
-            addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION)
         }
-        ContextCompat.registerReceiver(
-            appContext, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED
-        )
+        ContextCompat.registerReceiver(appContext, receiver, f, ContextCompat.RECEIVER_NOT_EXPORTED)
         receiverRegistered = true
     }
 
+    // ═══════════════════════════════════════════════════
+    // إنشاء مجموعة → نصبح Group Owner (IP: 192.168.49.1)
+    // ═══════════════════════════════════════════════════
+    fun createGroup(onResult: (String?) -> Unit) {
+        if (manager == null) { onResult(null); return }
+        if (!hasPermissions()) { onResult(null); return }
+
+        val ch = ensureChannel() ?: run { onResult(null); return }
+
+        // احذف أي مجموعة قديمة
+        try { manager.removeGroup(ch, null) } catch (_: SecurityException) {}
+        delaySync(500)
+
+        pendingGroupIpCallback = onResult
+        try {
+            manager.createGroup(ch, object : WifiP2pManager.ActionListener {
+                override fun onSuccess() {
+                    Logger.i("Group created — we are group owner")
+                    // انتظر معلومات الاتصال (IP)
+                    scope.launch {
+                        repeat(10) {
+                            delay(500)
+                            val ip = fetchOwnGroupIp()
+                            if (ip != null) {
+                                pendingGroupIpCallback?.invoke(ip)
+                                pendingGroupIpCallback = null
+                                return@launch
+                            }
+                        }
+                        // فشل الحصول على IP
+                        pendingGroupIpCallback?.invoke(null)
+                        pendingGroupIpCallback = null
+                    }
+                }
+                override fun onFailure(reason: Int) {
+                    Logger.w("createGroup failed: $reason")
+                    pendingGroupIpCallback?.invoke(null)
+                    pendingGroupIpCallback = null
+                }
+            })
+        } catch (_: SecurityException) {
+            onResult(null)
+        }
+    }
+
+    private fun fetchOwnGroupIp(): String? {
+        val ch = channel ?: return null
+        try {
+            manager?.requestConnectionInfo(ch) { info ->
+                // non-blocking; handled via state
+            }
+            // نستخدم requestGroupInfo
+            var ip: String? = null
+            manager?.requestGroupInfo(ch) { group ->
+                if (group != null && group.isGroupOwner) {
+                    ip = "192.168.49.1"
+                }
+            }
+            return ip ?: "192.168.49.1" // افتراضي لمالك المجموعة
+        } catch (_: SecurityException) { return null }
+    }
+
+    // ═══════════════════════════════════════════════════
+    // اكتشاف الأجهزة
+    // ═══════════════════════════════════════════════════
     fun startDiscovery() {
-        if (!ensureInitialized()) return
-        if (!hasPermissions()) {
-            _state.value = WifiP2pState.Failed("Permissions missing")
-            return
+        if (manager == null) { _state.value = WifiP2pState.NotSupported; return }
+        if (!hasPermissions()) { _state.value = WifiP2pState.Failed("Permissions missing"); return }
+        attempts = 0
+        doStartDiscovery()
+    }
+
+    private fun doStartDiscovery() {
+        val ch = ensureChannel() ?: run {
+            _state.value = WifiP2pState.Failed("Channel init failed"); return
         }
+        discoveryJob?.cancel(); pollJob?.cancel()
         _state.value = WifiP2pState.Discovering
-        try {
-            manager?.discoverPeers(channel, object : WifiP2pManager.ActionListener {
-                override fun onSuccess() { Logger.d("Discovery started") }
-                override fun onFailure(reason: Int) {
-                    _state.value = WifiP2pState.Failed(mapFailure(reason))
-                }
-            })
-        } catch (e: SecurityException) {
-            _state.value = WifiP2pState.Failed("Security: ${e.message}")
+
+        discoveryJob = scope.launch {
+            try { manager?.stopPeerDiscovery(ch, null) } catch (_: SecurityException) {}
+            delay(600)
+            try {
+                manager?.discoverPeers(ch, object : WifiP2pManager.ActionListener {
+                    override fun onSuccess() {
+                        attempts = 0
+                        startPolling()
+                    }
+                    override fun onFailure(reason: Int) {
+                        attempts++
+                        Logger.w("Discovery failed reason=$reason attempt=$attempts")
+                        if (attempts < 4) {
+                            scope.launch {
+                                channel?.close(); channel = null
+                                initializeChannel()
+                                delay(3000)
+                                doStartDiscovery()
+                            }
+                        } else {
+                            _state.value = WifiP2pState.Failed(mapFailure(reason))
+                        }
+                    }
+                })
+            } catch (e: SecurityException) {
+                _state.value = WifiP2pState.Failed("Security: ${e.message}")
+            }
         }
     }
 
-    fun stopDiscovery() {
+    private fun startPolling() {
+        pollJob?.cancel()
+        pollJob = scope.launch {
+            repeat(60) {
+                if (!isActive) return@launch
+                requestPeers()
+                delay(2000)
+            }
+        }
+    }
+
+    private fun requestPeers() {
         val ch = channel ?: return
-        try {
-            manager?.stopPeerDiscovery(ch, object : WifiP2pManager.ActionListener {
-                override fun onSuccess() {}
-                override fun onFailure(reason: Int) {}
-            })
-        } catch (_: SecurityException) {}
-    }
-
-    fun connect(device: PeerDevice) {
-        if (!ensureInitialized()) return
-        if (!hasPermissions()) {
-            _state.value = WifiP2pState.Failed("Permissions missing")
-            return
-        }
-        _state.value = WifiP2pState.Connecting(device)
-        val config = WifiP2pConfig().apply {
-            deviceAddress = device.address
-            wps.setup = WpsInfo.PBC
-        }
-        try {
-            manager?.connect(channel, config, object : WifiP2pManager.ActionListener {
-                override fun onSuccess() { Logger.d("Connect requested to ${device.name}") }
-                override fun onFailure(reason: Int) {
-                    _state.value = WifiP2pState.Failed(mapFailure(reason))
-                }
-            })
-        } catch (e: SecurityException) {
-            _state.value = WifiP2pState.Failed("Security: ${e.message}")
-        }
-    }
-
-    fun disconnect() {
-        val ch = channel ?: return
-        try {
-            manager?.removeGroup(ch, object : WifiP2pManager.ActionListener {
-                override fun onSuccess() { _state.value = WifiP2pState.Idle }
-                override fun onFailure(reason: Int) { _state.value = WifiP2pState.Idle }
-            })
-        } catch (_: SecurityException) {}
-    }
-
-    private fun handleP2pStateChanged(intent: Intent) {
-        val enabled = intent.getIntExtra(
-            WifiP2pManager.EXTRA_WIFI_STATE,
-            WifiP2pManager.WIFI_P2P_STATE_DISABLED
-        ) == WifiP2pManager.WIFI_P2P_STATE_ENABLED
-        if (!enabled) {
-            _state.value = WifiP2pState.WifiDisabled
-        } else if (_state.value is WifiP2pState.WifiDisabled) {
-            _state.value = WifiP2pState.Idle
-        }
-    }
-
-    private fun handlePeersChanged() {
         if (!hasPermissions()) return
-        val ch = channel ?: return
         try {
-            manager?.requestPeers(ch) { peerList ->
-                val peers = peerList.deviceList
-                    .filter { it.status == WifiP2pDevice.AVAILABLE }
-                    .map { it.toPeerDevice() }
-                _state.value = if (peers.isEmpty()) WifiP2pState.Discovering
-                else WifiP2pState.PeersAvailable(peers)
+            manager?.requestPeers(ch) { peers ->
+                val list = peers.deviceList.map { it.toPeer() }
+                _state.value = if (list.isEmpty()) WifiP2pState.Discovering
+                              else WifiP2pState.PeersAvailable(list)
             }
         } catch (_: SecurityException) {}
     }
 
+    // ═══════════════════════════════════════════════════
+    // الاتصال بجهاز (نصبح Client)
+    // ═══════════════════════════════════════════════════
+    fun connect(device: PeerDevice) {
+        val ch = ensureChannel() ?: return
+        if (!hasPermissions()) { _state.value = WifiP2pState.Failed("Permissions"); return }
+        discoveryJob?.cancel(); pollJob?.cancel()
+        _state.value = WifiP2pState.Connecting(device)
+
+        val config = WifiP2pConfig().apply {
+            deviceAddress = device.address
+            wps.setup = WpsInfo.PBC
+            groupOwnerIntent = 0 // نحن client (0 = منخفض)
+        }
+        try {
+            manager?.connect(ch, config, object : WifiP2pManager.ActionListener {
+                override fun onSuccess() { Logger.i("Connect requested") }
+                override fun onFailure(reason: Int) {
+                    _state.value = WifiP2pState.Failed(mapFailure(reason))
+                }
+            })
+        } catch (_: SecurityException) {}
+    }
+
     private fun handleConnectionChanged() {
-        if (!hasPermissions()) return
         val ch = channel ?: return
+        if (!hasPermissions()) return
         try {
             manager?.requestConnectionInfo(ch) { info ->
                 if (info.groupFormed) {
@@ -183,29 +262,48 @@ class WifiP2pManagerWrapper(private val appContext: Context) {
         } catch (_: SecurityException) {}
     }
 
+    fun stopDiscovery() {
+        discoveryJob?.cancel(); pollJob?.cancel()
+        val ch = channel ?: return
+        try { manager?.stopPeerDiscovery(ch, null) } catch (_: SecurityException) {}
+    }
+
+    fun removeGroup() {
+        stopDiscovery()
+        val ch = channel ?: return
+        try { manager?.removeGroup(ch, null) } catch (_: SecurityException) {}
+    }
+
+    /** مرادف لـ removeGroup() للتوافق مع الكود القديم */
+    fun disconnect() = removeGroup()
+
+    private fun delaySync(ms: Long) {
+        try { Thread.sleep(ms) } catch (_: Exception) {}
+    }
+
     private fun hasPermissions(): Boolean =
         PermissionHelper.hasAll(appContext, PermissionHelper.wifiPermissions())
 
-    private fun mapFailure(reason: Int): String = when (reason) {
-        WifiP2pManager.P2P_UNSUPPORTED -> "P2P unsupported"
-        WifiP2pManager.BUSY -> "WifiP2p busy"
-        WifiP2pManager.ERROR -> "WifiP2p error"
-        else -> "Unknown error ($reason)"
+    private fun mapFailure(r: Int): String = when (r) {
+        WifiP2pManager.P2P_UNSUPPORTED -> "Wi-Fi Direct not supported"
+        WifiP2pManager.BUSY -> "System busy — close Nearby Share and retry"
+        WifiP2pManager.ERROR -> "Internal error"
+        else -> "Unknown error ($r)"
     }
 
-    private fun WifiP2pDevice.toPeerDevice() = PeerDevice(
-        name = deviceName?.takeIf { it.isNotBlank() } ?: deviceAddress ?: "Unknown",
+    private fun WifiP2pDevice.toPeer() = PeerDevice(
+        name = deviceName?.ifBlank { deviceAddress ?: "?" } ?: "?",
         address = deviceAddress ?: "",
         isAvailable = status == WifiP2pDevice.AVAILABLE
     )
 
     fun dispose() {
         stopDiscovery()
+        removeGroup()
         if (receiverRegistered) {
             try { appContext.unregisterReceiver(receiver) } catch (_: Exception) {}
             receiverRegistered = false
         }
-        channel?.close()
-        channel = null
+        channel?.close(); channel = null
     }
 }

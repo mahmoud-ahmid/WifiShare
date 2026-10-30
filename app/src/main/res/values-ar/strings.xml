@@ -43,10 +43,8 @@
     <string name="settings_selftest_passed">نجح! %1$d بايت في %2$d مللي ثانية</string>
     <string name="settings_selftest_failed">فشل: %1$s</string>
 
-    <string name="qr_display_title">رمز QR الخاص بي</string>
     <string name="qr_display_hint">اطلب من المرسل مسح هذا الرمز</string>
     <string name="qr_display_device">الجهاز: %1$s</string>
-    <string name="qr_display_start_receive">بدء الاستقبال</string>
 
     <string name="qr_scanner_title">مسح QR</string>
     <string name="qr_scanner_hint">وجّه الكاميرا نحو رمز المرسل</string>
@@ -111,11 +109,6 @@
     <string name="files_delete_confirm">حذف "%1$s" نهائيًا؟</string>
     <string name="files_deleted">تم حذف الملف</string>
     <string name="files_delete_failed">فشل الحذف</string>
-    <string name="tab_received">مستلمة</string>
-    <string name="tab_images">صور</string>
-    <string name="tab_videos">فيديو</string>
-    <string name="tab_audio">صوت</string>
-    <string name="tab_documents">مستندات</string>
     <string name="files_action_send">إرسال بواسطة WifiShare</string>
     <string name="files_send_ready">الملفات جاهزة — افتح الإرسال واختر جهازًا</string>
     <string name="files_summary">%1$d ملف · %2$s</string>
@@ -142,4 +135,97 @@
     <string name="files_setting_failed">فشل: %1$s</string>
     <string name="media_cant_play">تعذّر تشغيل هذا الملف</string>
     <string name="media_cant_open">تعذّر فتح هذا الملف</string>
+    <string name="settings_theme_mode">وضع المظهر</string>
+    <string name="settings_accent">لون التمييز</string>
+    <string name="theme_light">فاتح</string>
+    <string name="theme_dark">داكن</string>
+    <string name="theme_system">حسب النظام</string>
+    <string name="accent_blue">أزرق</string>
+    <string name="accent_green">أخضر</string>
+    <string name="accent_orange">برتقالي</string>
+    <string name="accent_purple">بنفسجي</string>
+    <string name="accent_red">أحمر</string>
+    <string name="tab_apps">تطبيقات</string>
+    <string name="tab_files">ملفات</string>
+    <string name="send_pick_title">اختر ما تريد إرساله</string>
+    <string name="send_find_title">البحث عن مستقبِل</string>
+    <string name="send_back">رجوع</string>
+    <string name="send_select_all">تحديد الكل</string>
+    <string name="send_unselect_all">إلغاء تحديد الكل</string>
+    <string name="send_selected_count">تم تحديد %1$d</string>
+    <string name="send_selected_count_zero">لم تحدد شيئًا</string>
+    <string name="send_action">إرسال</string>
+    <string name="send_no_files">اختر ملفًا واحدًا على الأقل</string>
+    <string name="send_empty">لا يوجد شيء هنا</string>
+    <string name="send_folder">مجلد</string>
+    <string name="send_find_refresh">تحديث البحث</string>
+    <string name="send_installed_apps">التطبيقات المثبتة</string>
+    <string name="send_uninstalled_apks">ملفات APK غير المثبتة</string>
+    <string name="tab_received">مستلمة</string>
+    <string name="tab_images">صور</string>
+    <string name="tab_videos">فيديو</string>
+    <string name="tab_audio">صوت</string>
+    <string name="tab_documents">مستندات</string>
+    <string name="qr_display_title">المستقبِل جاهز</string>
+    <string name="qr_display_start_receive">بدء الاستقبال</string>
+    <string name="send_connect_hint">امسح رمز QR الخاص بالمستقبِل للاتصال</string>
+    <string name="send_connect_scan_qr">مسح QR</string>
+    <string name="send_connect_manual">اتصال يدوي</string>
+    <string name="send_connect_manual_hint">افتح إعدادات الواي فاي واتصل بشبكة المستقبِل</string>
+    <string name="send_connect_cancelled">أُلغي المسح</string>
+    <string name="send_connect_invalid_qr">ليس رمز WifiShare</string>
+    <string name="send_connect_connecting">جارٍ الاتصال بـ %1$s…</string>
+    <string name="send_connect_failed">فشل الاتصال — حاول مجددًا</string>
+    <string name="send_connect_connected">تم الاتصال!</string>
+    <string name="storage_perm_title">صلاحية الوصول للملفات</string>
+    <string name="storage_perm_message">فعّل الوصول لكل الملفات من الإعدادات لتصفح ملفات الجهاز.</string>
+    <string name="storage_perm_open">فتح الإعدادات</string>
+    <string name="tab_folders">مجلدات</string>
+    <string name="btn_received_transfers">المنقول / المستلم</string>
+    <string name="btn_my_folders">مجلدات هاتفي</string>
+    <string name="storage_perm_needed">الوصول للتخزين مطلوب</string>
+    <string name="media_audio_disabled">تشغيل الصوت معطّل في هذا التطبيق</string>
+    <string name="home_hint">اضغط إرسال لاختيار الملفات، أو استقبال لعرض رمز QR للمُرسِل.</string>
+    <string name="accent_teal">فيروزي</string>
+    <string name="accent_pink">وردي</string>
+    <string name="accent_indigo">نيلي</string>
+    <string name="guide_title">دليل الاستخدام</string>
+    <string name="guide_got_it">فهمت</string>
+    <string name="guide_receive_title">📥 للمستقبِل:</string>
+    <string name="guide_send_title">📤 للمرسِل:</string>
+    <string name="home_how_it_works">كيف يعمل التطبيق؟</string>
+    <string name="home_steps_summary">📥 المستقبِل: يفتح "استقبال" → يعرض QR
+📤 المرسل: يفتح "إرسال" → يختار ملفات → يمسح QR
+✨ يبدأ النقل تلقائيًا</string>
+    <string name="step_1_of_3">الخطوة 1 من 3</string>
+    <string name="step_2_of_3">الخطوة 2 من 3</string>
+    <string name="step_3_of_3">الخطوة 3 من 3</string>
+    <string name="step_error">خطأ</string>
+    <string name="step_manual">إعداد يدوي</string>
+    <string name="qr_display_creating_hotspot">جارٍ إنشاء نقطة الاتصال...</string>
+    <string name="qr_display_manual_setup">إعداد يدوي</string>
+    <string name="qr_display_retry">إعادة المحاولة</string>
+    <string name="qr_display_manual_hint">افتح إعدادات الواي فاي في الهاتف، أنشئ نقطة اتصال، ثم أدخل اسمها وكلمة مرورها:</string>
+    <string name="qr_display_manual_ssid">اسم الشبكة</string>
+    <string name="qr_display_manual_pass">كلمة المرور</string>
+    <string name="qr_display_generate">توليد رمز QR</string>
+    <string name="qr_display_timeout">لم يتم إنشاء النقطة تلقائيًا. جرّب الإعداد اليدوي.</string>
+    <string name="qr_display_step2_hint">اعرض هذا الرمز على المرسل ليقوم بمسحه</string>
+    <string name="guide_send_steps">1. افتح إرسال ملفات
+2. اختر الملفات
+3. امسح رمز QR من هاتف المستقبِل
+4. اقبل الاتصال، يبدأ الإرسال تلقائيًا</string>
+    <string name="guide_receive_steps">1. افتح استقبال ملفات
+2. اعرض رمز QR على الشاشة
+3. انتظر حتى يتصل المرسل
+4. يبدأ النقل تلقائيًا</string>
+    <string name="send_find_open_wifi">فتح إعدادات الواي فاي</string>
+    <string name="send_find_retry">إعادة المحاولة</string>
+    <string name="send_find_p2p_unsupported">جهازك لا يدعم Wi-Fi Direct</string>
+    <string name="send_find_wifi_off">الواي فاي مغلق — الرجاء تفعيله</string>
+    <string name="send_find_waiting">البحث عن أجهزة قريبة...</string>
+    <string name="send_find_found_n">تم العثور على %1$d جهاز — اضغط للاتصال</string>
+    <string name="send_find_connecting_to">جارٍ الاتصال بـ %1$s...</string>
+    <string name="send_find_connected">تم الاتصال! جارٍ بدء النقل...</string>
+    <string name="send_find_failed">خطأ: %1$s</string>
 </resources>

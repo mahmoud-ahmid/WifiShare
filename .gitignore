@@ -12,3 +12,5 @@ captures/
 .wsfix_backup/
 keystore.properties
 *.jks
+*.bak.*
+*.bak

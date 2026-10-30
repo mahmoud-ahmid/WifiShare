@@ -1,17 +1,20 @@
 package com.example.wifishare.ui.home
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.wifishare.R
 import com.example.wifishare.core.PermissionHelper
 import com.example.wifishare.core.toast
+import com.example.wifishare.databinding.DialogGuideBinding
 import com.example.wifishare.databinding.FragmentHomeBinding
 import com.example.wifishare.ui.common.BaseFragment
 
-class HomeFragment : BaseFragment<FragmentHomeBinding>({ i, p, a -> FragmentHomeBinding.inflate(i, p, a) }) {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -25,18 +28,25 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>({ i, p, a -> FragmentHome
         super.onViewCreated(view, savedInstanceState)
         binding.cardPermissions.setOnClickListener { requestPermissions() }
         binding.cardSend.setOnClickListener {
-            findNavController().navigate(R.id.action_home_to_discover)
+            findNavController().navigate(R.id.action_home_to_sendPick)
         }
         binding.cardReceive.setOnClickListener {
             findNavController().navigate(R.id.action_home_to_qrDisplay)
         }
-        binding.cardQr.setOnClickListener {
-            findNavController().navigate(R.id.action_home_to_qrScanner)
-        }
+        binding.cardHowItWorks.setOnClickListener { showGuide() }
         refreshPermissionState()
     }
 
     override fun onResume() { super.onResume(); refreshPermissionState() }
+
+    private fun showGuide() {
+        val b = DialogGuideBinding.inflate(LayoutInflater.from(requireContext()))
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.guide_title)
+            .setView(b.root)
+            .setPositiveButton(R.string.guide_got_it, null)
+            .show()
+    }
 
     private fun requestPermissions() {
         val missing = PermissionHelper.missing(requireContext(), PermissionHelper.wifiPermissions())

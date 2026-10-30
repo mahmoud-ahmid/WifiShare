@@ -187,6 +187,10 @@ class TransferViewModel(
     override fun onCleared() {
         super.onCleared()
         stopForegroundSafely()
+        try { container.wifiConnector.disconnect() } catch (_: Exception) {}
+        if (direction == TransferDirection.RECEIVE) {
+            try { container.hotspotManager.stopHotspot() } catch (_: Exception) {}
+        }
     }
 
     class Factory(

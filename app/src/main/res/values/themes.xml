@@ -1,14 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.WifiShare" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimary">@color/accent_purple</item>
+        <item name="colorOnPrimary">@color/on_accent_purple</item>
+        <item name="colorPrimaryContainer">@color/accent_purple</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_purple</item>
+        <item name="colorSecondary">@color/accent_purple</item>
+        <item name="colorOnSecondary">@color/on_accent_purple</item>
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/on_surface</item>
         <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOutline">@color/button_outline</item>
         <item name="android:colorBackground">@color/background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+    </style>
+
+    <style name="Theme.WifiShare.Purple" parent="Theme.WifiShare">
+        <item name="colorPrimary">@color/accent_purple</item>
+        <item name="colorOnPrimary">@color/on_accent_purple</item>
+        <item name="colorPrimaryContainer">@color/accent_purple</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_purple</item>
+        <item name="colorSecondary">@color/accent_purple</item>
+        <item name="colorOnSecondary">@color/on_accent_purple</item>
+    </style>
+
+    <style name="Theme.WifiShare.Blue" parent="Theme.WifiShare">
+        <item name="colorPrimary">@color/accent_blue</item>
+        <item name="colorOnPrimary">@color/on_accent_blue</item>
+        <item name="colorPrimaryContainer">@color/accent_blue</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_blue</item>
+        <item name="colorSecondary">@color/accent_blue</item>
+        <item name="colorOnSecondary">@color/on_accent_blue</item>
+    </style>
+
+    <style name="Theme.WifiShare.Green" parent="Theme.WifiShare">
+        <item name="colorPrimary">@color/accent_green</item>
+        <item name="colorOnPrimary">@color/on_accent_green</item>
+        <item name="colorPrimaryContainer">@color/accent_green</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_green</item>
+        <item name="colorSecondary">@color/accent_green</item>
+        <item name="colorOnSecondary">@color/on_accent_green</item>
+    </style>
+
+    <style name="Theme.WifiShare.Orange" parent="Theme.WifiShare">
+        <item name="colorPrimary">@color/accent_orange</item>
+        <item name="colorOnPrimary">@color/on_accent_orange</item>
+        <item name="colorPrimaryContainer">@color/accent_orange</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_orange</item>
+        <item name="colorSecondary">@color/accent_orange</item>
+        <item name="colorOnSecondary">@color/on_accent_orange</item>
+    </style>
+
+    <style name="Theme.WifiShare.Red" parent="Theme.WifiShare">
+        <item name="colorPrimary">@color/accent_red</item>
+        <item name="colorOnPrimary">@color/on_accent_red</item>
+        <item name="colorPrimaryContainer">@color/accent_red</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_red</item>
+        <item name="colorSecondary">@color/accent_red</item>
+        <item name="colorOnSecondary">@color/on_accent_red</item>
+    </style>
+
+    <!-- ستايل صف الإعدادات: خلفية + حدود + تباين -->
+    <style name="Widget.WifiShare.SettingsRow" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+        <item name="cardCornerRadius">14dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="strokeColor">@color/surface_stroke</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+    <style name="Theme.WifiShare.Teal" parent="Theme.WifiShare">
+        <item name="colorPrimary">@color/accent_teal</item>
+        <item name="colorOnPrimary">@color/on_accent_teal</item>
+        <item name="colorPrimaryContainer">@color/accent_teal</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_teal</item>
+        <item name="colorSecondary">@color/accent_teal</item>
+        <item name="colorOnSecondary">@color/on_accent_teal</item>
+    </style>
+
+    <style name="Theme.WifiShare.Pink" parent="Theme.WifiShare">
+        <item name="colorPrimary">@color/accent_pink</item>
+        <item name="colorOnPrimary">@color/on_accent_pink</item>
+        <item name="colorPrimaryContainer">@color/accent_pink</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_pink</item>
+        <item name="colorSecondary">@color/accent_pink</item>
+        <item name="colorOnSecondary">@color/on_accent_pink</item>
+    </style>
+
+    <style name="Theme.WifiShare.Indigo" parent="Theme.WifiShare">
+        <item name="colorPrimary">@color/accent_indigo</item>
+        <item name="colorOnPrimary">@color/on_accent_indigo</item>
+        <item name="colorPrimaryContainer">@color/accent_indigo</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_indigo</item>
+        <item name="colorSecondary">@color/accent_indigo</item>
+        <item name="colorOnSecondary">@color/on_accent_indigo</item>
+    </style>
+
+    <style name="Theme.WifiShare.Gradient1" parent="Theme.WifiShare">
+        <item name="android:windowBackground">@drawable/grad_sunset</item>
+        <item name="colorPrimary">@color/grad_sunset_p</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">@color/grad_sunset_p</item>
+        <item name="colorOnPrimaryContainer">#FFFFFF</item>
+        <item name="colorSecondary">@color/grad_sunset_p</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSurface">#99000000</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+    </style>
+
+    <style name="Theme.WifiShare.Gradient2" parent="Theme.WifiShare">
+        <item name="android:windowBackground">@drawable/grad_ocean</item>
+        <item name="colorPrimary">@color/grad_ocean_p</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">@color/grad_ocean_p</item>
+        <item name="colorOnPrimaryContainer">#FFFFFF</item>
+        <item name="colorSecondary">@color/grad_ocean_p</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSurface">#99000000</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+    </style>
+
+    <style name="Theme.WifiShare.Gradient3" parent="Theme.WifiShare">
+        <item name="android:windowBackground">@drawable/grad_forest</item>
+        <item name="colorPrimary">@color/grad_forest_p</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">@color/grad_forest_p</item>
+        <item name="colorOnPrimaryContainer">#FFFFFF</item>
+        <item name="colorSecondary">@color/grad_forest_p</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSurface">#99000000</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+    </style>
+
+    <style name="Theme.WifiShare.Gradient4" parent="Theme.WifiShare">
+        <item name="android:windowBackground">@drawable/grad_lavender</item>
+        <item name="colorPrimary">@color/grad_lavender_p</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">@color/grad_lavender_p</item>
+        <item name="colorOnPrimaryContainer">#FFFFFF</item>
+        <item name="colorSecondary">@color/grad_lavender_p</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSurface">#99000000</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+    </style>
+
+    <style name="Theme.WifiShare.Gradient5" parent="Theme.WifiShare">
+        <item name="android:windowBackground">@drawable/grad_candy</item>
+        <item name="colorPrimary">@color/grad_candy_p</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">@color/grad_candy_p</item>
+        <item name="colorOnPrimaryContainer">#FFFFFF</item>
+        <item name="colorSecondary">@color/grad_candy_p</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSurface">#99000000</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+    </style>
+
+    <style name="Theme.WifiShare.Gradient6" parent="Theme.WifiShare">
+        <item name="android:windowBackground">@drawable/grad_aurora</item>
+        <item name="colorPrimary">@color/grad_aurora_p</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">@color/grad_aurora_p</item>
+        <item name="colorOnPrimaryContainer">#FFFFFF</item>
+        <item name="colorSecondary">@color/grad_aurora_p</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSurface">#99000000</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+    </style>
+
+    <style name="Theme.WifiShare.Gradient7" parent="Theme.WifiShare">
+        <item name="android:windowBackground">@drawable/grad_fire</item>
+        <item name="colorPrimary">@color/grad_fire_p</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">@color/grad_fire_p</item>
+        <item name="colorOnPrimaryContainer">#FFFFFF</item>
+        <item name="colorSecondary">@color/grad_fire_p</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSurface">#99000000</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+    </style>
+
+    <style name="Theme.WifiShare.Gradient8" parent="Theme.WifiShare">
+        <item name="android:windowBackground">@drawable/grad_pastel</item>
+        <item name="colorPrimary">@color/grad_pastel_p</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">@color/grad_pastel_p</item>
+        <item name="colorOnPrimaryContainer">#FFFFFF</item>
+        <item name="colorSecondary">@color/grad_pastel_p</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSurface">#99000000</item>
+        <item name="colorOnSurface">#FFFFFF</item>
     </style>
 </resources>

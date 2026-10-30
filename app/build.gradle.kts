@@ -5,11 +5,16 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-// بيانات التوقيع من keystore.properties (خارج Git)
-val ksProps = Properties().apply {
-    val f = rootProject.file("keystore.properties")
-    if (f.exists()) f.inputStream().use { load(it) }
+// ── Auto-versioning ──
+val versionFile = rootProject.file("version.properties")
+val vc_props = Properties().apply {
+    if (versionFile.exists()) versionFile.inputStream().use { load(it) }
 }
+val vCode = vc_props.getProperty("version.code", "1").toInt()
+val vMajor = vCode / 100
+val vMinor = (vCode / 10) % 10
+val vPatch = vCode % 10
+val vName = "$vMajor.$vMinor.$vPatch"
 
 android {
     namespace = "com.example.wifishare"
@@ -19,29 +24,14 @@ android {
         applicationId = "com.example.wifishare"
         minSdk = 24
         targetSdk = 34
-        versionCode = 3
-        versionName = "0.3.0"
+        versionCode = vCode
+        versionName = vName
         resourceConfigurations += listOf("en", "ar")
-    }
-
-    signingConfigs {
-        create("release") {
-            if (ksProps.containsKey("storeFile")) {
-                storeFile = file(ksProps["storeFile"] as String)
-                storePassword = ksProps["storePassword"] as String
-                keyAlias = ksProps["keyAlias"] as String
-                keyPassword = ksProps["keyPassword"] as String
-            }
-        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            if (ksProps.containsKey("storeFile")) {
-                signingConfig = signingConfigs.getByName("release")
-            }
+            isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -72,4 +62,18 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+}
+
+// ── Auto-bump on successful build ──
+afterEvaluate {
+    tasks.matching { it.name == "assembleDebug" || it.name == "assembleRelease" }.configureEach {
+        doLast {
+            val newCode = vCode + 1
+            versionFile.writeText("version.code=$newCode\n")
+            val nM = newCode / 100
+            val nm = (newCode / 10) % 10
+            val np = newCode % 10
+            println("📦 Version bumped: $vName ($vCode) → $nM.$nm.$np ($newCode)")
+        }
+    }
 }

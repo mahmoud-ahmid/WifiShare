@@ -43,10 +43,8 @@
     <string name="settings_selftest_passed">Passed! %1$d bytes in %2$d ms</string>
     <string name="settings_selftest_failed">Failed: %1$s</string>
 
-    <string name="qr_display_title">My QR code</string>
     <string name="qr_display_hint">Ask the sender to scan this code</string>
     <string name="qr_display_device">Device: %1$s</string>
-    <string name="qr_display_start_receive">Start receiving</string>
 
     <string name="qr_scanner_title">Scan QR</string>
     <string name="qr_scanner_hint">Point your camera at the sender\'s QR code</string>
@@ -111,11 +109,6 @@
     <string name="files_delete_confirm">Delete "%1$s" permanently?</string>
     <string name="files_deleted">File deleted</string>
     <string name="files_delete_failed">Delete failed</string>
-    <string name="tab_received">Received</string>
-    <string name="tab_images">Images</string>
-    <string name="tab_videos">Videos</string>
-    <string name="tab_audio">Audio</string>
-    <string name="tab_documents">Documents</string>
     <string name="files_action_send">Send via WifiShare</string>
     <string name="files_send_ready">Files ready — open Send and pick a device</string>
     <string name="files_summary">%1$d files · %2$s</string>
@@ -142,4 +135,97 @@
     <string name="files_setting_failed">Failed: %1$s</string>
     <string name="media_cant_play">Cannot play this file</string>
     <string name="media_cant_open">Cannot open this file</string>
+    <string name="settings_theme_mode">Theme mode</string>
+    <string name="settings_accent">Accent color</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system">Follow system</string>
+    <string name="accent_blue">Blue</string>
+    <string name="accent_green">Green</string>
+    <string name="accent_orange">Orange</string>
+    <string name="accent_purple">Purple</string>
+    <string name="accent_red">Red</string>
+    <string name="tab_apps">Apps</string>
+    <string name="tab_files">Files</string>
+    <string name="send_pick_title">Choose what to send</string>
+    <string name="send_find_title">Find a receiver</string>
+    <string name="send_back">Back</string>
+    <string name="send_select_all">Select all</string>
+    <string name="send_unselect_all">Unselect all</string>
+    <string name="send_selected_count">%1$d selected</string>
+    <string name="send_selected_count_zero">Nothing selected</string>
+    <string name="send_action">Send</string>
+    <string name="send_no_files">Select at least one file</string>
+    <string name="send_empty">Nothing here</string>
+    <string name="send_folder">Folder</string>
+    <string name="send_find_refresh">Refresh</string>
+    <string name="send_installed_apps">Installed apps</string>
+    <string name="send_uninstalled_apks">APK files (not installed)</string>
+    <string name="tab_received">Received</string>
+    <string name="tab_images">Images</string>
+    <string name="tab_videos">Videos</string>
+    <string name="tab_audio">Audio</string>
+    <string name="tab_documents">Documents</string>
+    <string name="qr_display_title">Receiver is ready</string>
+    <string name="qr_display_start_receive">Start receiving</string>
+    <string name="send_connect_hint">Scan the receiver\'s QR code to connect</string>
+    <string name="send_connect_scan_qr">Scan QR</string>
+    <string name="send_connect_manual">Manual connection</string>
+    <string name="send_connect_manual_hint">Open Wi-Fi settings and connect to the receiver network</string>
+    <string name="send_connect_cancelled">Scan cancelled</string>
+    <string name="send_connect_invalid_qr">Not a WifiShare QR</string>
+    <string name="send_connect_connecting">Connecting to %1$s…</string>
+    <string name="send_connect_failed">Connection failed — try again</string>
+    <string name="send_connect_connected">Connected!</string>
+    <string name="storage_perm_title">File access permission</string>
+    <string name="storage_perm_message">Enable All files access in settings to browse device files.</string>
+    <string name="storage_perm_open">Open settings</string>
+    <string name="tab_folders">Folders</string>
+    <string name="btn_received_transfers">Received / Transferred</string>
+    <string name="btn_my_folders">My Phone Folders</string>
+    <string name="storage_perm_needed">Storage access required</string>
+    <string name="media_audio_disabled">Audio playback is disabled in this app</string>
+    <string name="home_hint">Tap Send to pick files, or Receive to share your QR with the sender.</string>
+    <string name="accent_teal">Teal</string>
+    <string name="accent_pink">Pink</string>
+    <string name="accent_indigo">Indigo</string>
+    <string name="guide_title">How it works</string>
+    <string name="guide_got_it">Got it</string>
+    <string name="guide_receive_title">📥 For the receiver:</string>
+    <string name="guide_send_title">📤 For the sender:</string>
+    <string name="home_how_it_works">How does it work?</string>
+    <string name="home_steps_summary">📥 Receiver: opens "Receive" → shows QR
+📤 Sender: opens "Send" → picks files → scans QR
+✨ Transfer starts automatically</string>
+    <string name="step_1_of_3">Step 1 of 3</string>
+    <string name="step_2_of_3">Step 2 of 3</string>
+    <string name="step_3_of_3">Step 3 of 3</string>
+    <string name="step_error">Error</string>
+    <string name="step_manual">Manual setup</string>
+    <string name="qr_display_creating_hotspot">Creating hotspot...</string>
+    <string name="qr_display_manual_setup">Manual setup</string>
+    <string name="qr_display_retry">Retry</string>
+    <string name="qr_display_manual_hint">Open Wi-Fi settings, create a hotspot, then enter its name and password:</string>
+    <string name="qr_display_manual_ssid">Network name (SSID)</string>
+    <string name="qr_display_manual_pass">Password</string>
+    <string name="qr_display_generate">Generate QR</string>
+    <string name="qr_display_timeout">Automatic hotspot failed. Try manual setup.</string>
+    <string name="qr_display_step2_hint">Show this QR code to the sender</string>
+    <string name="guide_send_steps">1. افتح إرسال ملفات
+2. اختر الملفات
+3. امسح رمز QR من هاتف المستقبِل
+4. اقبل الاتصال، يبدأ الإرسال تلقائيًا</string>
+    <string name="guide_receive_steps">1. افتح استقبال ملفات
+2. اعرض رمز QR على الشاشة
+3. انتظر حتى يتصل المرسل
+4. يبدأ النقل تلقائيًا</string>
+    <string name="send_find_open_wifi">Open Wi-Fi settings</string>
+    <string name="send_find_retry">Retry</string>
+    <string name="send_find_p2p_unsupported">Your device does not support Wi-Fi Direct</string>
+    <string name="send_find_wifi_off">Wi-Fi is off — please turn it on</string>
+    <string name="send_find_waiting">Searching for nearby devices...</string>
+    <string name="send_find_found_n">Found %1$d device(s) — tap to connect</string>
+    <string name="send_find_connecting_to">Connecting to %1$s...</string>
+    <string name="send_find_connected">Connected! Starting transfer...</string>
+    <string name="send_find_failed">Error: %1$s</string>
 </resources>

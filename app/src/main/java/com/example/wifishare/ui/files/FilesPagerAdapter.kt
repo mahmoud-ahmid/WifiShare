@@ -6,17 +6,15 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.wifishare.data.files.Source
 
 class FilesPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
-
     private val sources = listOf(
         Source.RECEIVED,
         Source.IMAGES,
         Source.VIDEOS,
         Source.AUDIO,
-        Source.DOCUMENTS
+        Source.DOCUMENTS,
+        Source.APPS
     )
-
     override fun getItemCount(): Int = sources.size
-
     override fun createFragment(position: Int): Fragment {
         return MediaListFragment().apply {
             arguments = Bundle().apply {
