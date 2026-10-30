@@ -251,9 +251,10 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(
                 testFile.writeText("WifiShare self-test\n${System.currentTimeMillis()}\n" + "X".repeat(100_000))
                 val sentSize = testFile.length()
                 val uri = FileProvider.getUriForFile(ctx, "${ctx.packageName}.fileprovider", testFile)
-                val receiveDeferred = async { delay(300); container.transferServer.receiveOnce() }
+                val testToken = com.example.wifishare.core.SessionToken.regenerate()
+                val receiveDeferred = async { delay(300); container.transferServer.receiveOnce(testToken) }
                 delay(900)
-                val sendResult = container.transferClient.send("127.0.0.1", listOf(uri))
+                val sendResult = container.transferClient.send("127.0.0.1", listOf(uri), testToken)
                 val receiveResult = receiveDeferred.await()
                 val elapsed = System.currentTimeMillis() - startedAt
                 when {
