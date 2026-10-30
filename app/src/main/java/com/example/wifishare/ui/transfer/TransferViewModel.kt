@@ -20,6 +20,7 @@ import com.example.wifishare.service.TransferService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.UUID
@@ -40,6 +41,7 @@ class TransferViewModel(
 
     private var serviceStarted = false
     private var running = false
+    private var job: Job? = null
 
     init {
         viewModelScope.launch {
@@ -68,7 +70,7 @@ class TransferViewModel(
         if (running || direction != TransferDirection.RECEIVE) return
         running = true
         startForegroundSafely()
-        viewModelScope.launch {
+        job = viewModelScope.launch {
             Logger.i("Receiving on port ${Constants.TRANSFER_PORT}")
             val result = container.transferServer.receiveOnce()
             running = false
@@ -122,7 +124,7 @@ class TransferViewModel(
         }
         running = true
         startForegroundSafely()
-        viewModelScope.launch {
+        job = viewModelScope.launch {
             Logger.i("Sending ${uris.size} file(s) to $hostIp")
             val result = container.transferClient.send(hostIp, uris, token)
             running = false
@@ -144,6 +146,14 @@ class TransferViewModel(
             result.onFailure { Logger.e("Send failed", it) }
             stopForegroundSafely()
         }
+    }
+
+    fun cancel() {
+        job?.cancel()
+        job = null
+        running = false
+        _progress.value = _progress.value.copy(isRunning = false, errorMessage = "تم الإلغاء")
+        stopForegroundSafely()
     }
 
     private fun startForegroundSafely() {

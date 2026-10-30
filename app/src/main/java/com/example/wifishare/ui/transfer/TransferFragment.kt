@@ -67,6 +67,7 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>({ i, p, a -> Frag
         else getString(R.string.transfer_waiting)
 
         binding.btnPick.isVisible = direction == TransferDirection.SEND
+        binding.btnCancel.setOnClickListener { viewModel.cancel() }
         binding.btnPick.setOnClickListener {
             pickFilesLauncher.launch(arrayOf("*/*"))
         }
@@ -100,6 +101,7 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>({ i, p, a -> Frag
     }
 
     private fun render(p: TransferProgress) {
+        binding.btnCancel.isVisible = p.isRunning
         binding.progress.progress = p.percent
         binding.tvPercent.text = "${p.percent}%"
 
