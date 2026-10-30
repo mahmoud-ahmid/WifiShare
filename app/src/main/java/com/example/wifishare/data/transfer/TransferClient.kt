@@ -18,10 +18,7 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import kotlin.coroutines.coroutineContext
 
-/**
- * عميل النقل (المرسل). يتصل بجهاز المستقبِل عبر Socket ويعطيه قائمة ملفات.
- * StateFlow<TransferProgress> يوفّر تحديثات UI حيّة.
- */
+/** المرسِل: مصافحة HMAC متبادلة + تشفير + SHA-256 لكل ملف. token فارغ = رابط Wi-Fi Direct. */
 class TransferClient(private val contentResolver: ContentResolver) {
 
     private val _progress = MutableStateFlow(TransferProgress(direction = TransferDirection.SEND))
@@ -32,28 +29,28 @@ class TransferClient(private val contentResolver: ContentResolver) {
         try {
             if (hostIp.isBlank()) throw IOException("Empty receiver IP")
             if (files.isEmpty()) throw IOException("No files selected")
+            _progress.value = TransferProgress(direction = TransferDirection.SEND)
 
             val boundSocket = try {
                 NetworkHolder.get()?.socketFactory?.createSocket()
             } catch (e: Exception) { null }
             socket = (boundSocket ?: Socket()).apply {
+                sendBufferSize = 1024 * 1024
                 connect(InetSocketAddress(hostIp, Constants.TRANSFER_PORT), Constants.CONNECT_TIMEOUT_MS.toInt())
                 soTimeout = Constants.SOCKET_TIMEOUT_MS.toInt()
                 tcpNoDelay = true
-                sendBufferSize = 256 * 1024
             }
-            val out = TransferProtocol.wrapOut(socket.getOutputStream())
-            val input = TransferProtocol.wrapIn(socket.getInputStream())
-
-            // مصافحة + توكن الجلسة
-            TransferProtocol.writeHello(out, token)
-            if (input.readByte().toInt() != 1) {
-                throw IOException("Receiver refused the connection (invalid or expired code)")
-            }
+            val session = TransferProtocol.clientHandshake(
+                socket.getInputStream(),
+                socket.getOutputStream(),
+                token.ifBlank { TransferProtocol.P2P_PSK }
+            )
+            val out = session.out
+            val input = session.input
 
             val metas = files.map { uri ->
                 var size = querySize(uri)
-                if (size <= 0L) size = countBytes(uri)   // الحجم مجهول: احسبه فعليًا
+                if (size <= 0L) size = countBytes(uri)
                 FileMeta(
                     name = queryName(uri) ?: "file_${System.currentTimeMillis()}",
                     size = size
@@ -68,8 +65,9 @@ class TransferClient(private val contentResolver: ContentResolver) {
                 isRunning = true
             )
 
-            val startNs = System.currentTimeMillis()
+            val startMs = System.currentTimeMillis()
             var sentBytes = 0L
+            var lastUi = 0L
             val buffer = ByteArray(Constants.CHUNK_SIZE)
 
             metas.forEachIndexed { idx, meta ->
@@ -82,6 +80,7 @@ class TransferClient(private val contentResolver: ContentResolver) {
 
                 val stream = contentResolver.openInputStream(files[idx])
                     ?: throw IOException("Cannot open ${meta.name}")
+                val digest = TransferProtocol.newDigest()
                 stream.use { rawIn ->
                     var remaining = meta.size
                     while (remaining > 0) {
@@ -89,17 +88,24 @@ class TransferClient(private val contentResolver: ContentResolver) {
                         val toRead = minOf(buffer.size.toLong(), remaining).toInt()
                         val read = rawIn.read(buffer, 0, toRead)
                         if (read <= 0) throw IOException("Source shorter than declared: ${meta.name}")
+                        digest.update(buffer, 0, read)
                         out.write(buffer, 0, read)
                         remaining -= read
                         sentBytes += read
-                        val elapsed = (System.currentTimeMillis() - startNs).coerceAtLeast(1L)
-                        _progress.value = _progress.value.copy(
-                            bytesTransferred = sentBytes,
-                            bytesPerSecond = (sentBytes * 1000L) / elapsed
-                        )
+                        val now = System.currentTimeMillis()
+                        if (now - lastUi >= 100) {
+                            lastUi = now
+                            val elapsed = (now - startMs).coerceAtLeast(1L)
+                            _progress.value = _progress.value.copy(
+                                bytesTransferred = sentBytes,
+                                bytesPerSecond = (sentBytes * 1000L) / elapsed
+                            )
+                        }
                     }
-                    out.flush()
                 }
+                out.write(digest.digest())
+                out.flush()
+                _progress.value = _progress.value.copy(bytesTransferred = sentBytes)
 
                 if (!TransferProtocol.readConfirm(input)) {
                     throw IOException("Receiver rejected: ${meta.name}")
