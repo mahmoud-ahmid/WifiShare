@@ -8,16 +8,16 @@ import com.example.wifishare.core.SafeName
 import com.example.wifishare.core.SessionToken
 import com.example.wifishare.domain.model.TransferDirection
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.net.InetSocketAddress
 import java.net.NetworkInterface
 import java.net.ServerSocket
 import java.net.Socket
@@ -42,14 +42,19 @@ class TransferServer(private val context: Context) {
             var partial: File? = null
             val saved = mutableListOf<File>()
             try {
-                val srv = ServerSocket(Constants.TRANSFER_PORT).apply { reuseAddress = true }
+                _progress.value = TransferProgress(direction = TransferDirection.RECEIVE)
+                val srv = ServerSocket().apply {
+                    reuseAddress = true
+                    receiveBufferSize = 1024 * 1024
+                    bind(InetSocketAddress(Constants.TRANSFER_PORT))
+                }
                 server = srv
                 val deadline = System.currentTimeMillis() + Constants.SERVER_ACCEPT_TIMEOUT_MS
                 Logger.d("TransferServer listening on ${Constants.TRANSFER_PORT}")
 
-                var streams: Pair<DataInputStream, DataOutputStream>? = null
+                var session: TransferProtocol.Session? = null
                 var bad = 0
-                while (streams == null) {
+                while (session == null) {
                     coroutineContext.ensureActive()
                     val left = deadline - System.currentTimeMillis()
                     if (left <= 0) throw IOException("Timed out waiting for sender")
@@ -59,23 +64,24 @@ class TransferServer(private val context: Context) {
                     if (hs == null) {
                         try { s.close() } catch (_: IOException) {}
                         bad++
-                        if (bad >= Constants.MAX_BAD_ATTEMPTS) throw IOException("Too many rejected connections")
+                        if (bad >= Constants.MAX_BAD_ATTEMPTS) delay(1000)
                     } else {
                         s.tcpNoDelay = true
-                        s.receiveBufferSize = 256 * 1024
                         socket = s
-                        streams = hs
+                        session = hs
                     }
                 }
-                val ready = streams ?: throw IOException("No connection")
-                val input = ready.first
-                val out = ready.second
+                val ready = session ?: throw IOException("No connection")
+                val input = ready.input
+                val out = ready.out
 
                 val saveDir = receiveDir()
                 val startMs = System.currentTimeMillis()
                 var recvBytes = 0L
                 var fileCount = 0
                 var totalBytes = 0L
+                var lastUi = 0L
+                val buffer = ByteArray(Constants.CHUNK_SIZE)
 
                 while (true) {
                     coroutineContext.ensureActive()
@@ -98,26 +104,38 @@ class TransferServer(private val context: Context) {
 
                     val outFile = uniqueFile(saveDir, meta.name)
                     partial = outFile
-                    FileOutputStream(outFile).buffered().use { fileOut ->
+                    val digest = TransferProtocol.newDigest()
+                    FileOutputStream(outFile).buffered(256 * 1024).use { fileOut ->
                         var remaining = meta.size
-                        val buffer = ByteArray(Constants.CHUNK_SIZE)
                         while (remaining > 0) {
                             coroutineContext.ensureActive()
                             val toRead = minOf(buffer.size.toLong(), remaining).toInt()
                             val read = input.read(buffer, 0, toRead)
                             if (read <= 0) throw IOException("Connection closed mid-file")
+                            digest.update(buffer, 0, read)
                             fileOut.write(buffer, 0, read)
                             remaining -= read
                             recvBytes += read
-                            val elapsed = (System.currentTimeMillis() - startMs).coerceAtLeast(1L)
-                            _progress.value = _progress.value.copy(
-                                bytesTransferred = recvBytes,
-                                bytesPerSecond = (recvBytes * 1000L) / elapsed
-                            )
+                            val now = System.currentTimeMillis()
+                            if (now - lastUi >= 100) {
+                                lastUi = now
+                                val elapsed = (now - startMs).coerceAtLeast(1L)
+                                _progress.value = _progress.value.copy(
+                                    bytesTransferred = recvBytes,
+                                    bytesPerSecond = (recvBytes * 1000L) / elapsed
+                                )
+                            }
                         }
+                    }
+                    val expected = ByteArray(TransferProtocol.HASH_LEN)
+                    input.readFully(expected)
+                    if (!MessageDigest.isEqual(expected, digest.digest())) {
+                        TransferProtocol.writeConfirm(out, ok = false)
+                        throw IOException("Checksum mismatch: ${meta.name}")
                     }
                     partial = null
                     saved.add(outFile)
+                    _progress.value = _progress.value.copy(bytesTransferred = recvBytes)
                     TransferProtocol.writeConfirm(out, ok = true)
                 }
                 _progress.value = _progress.value.copy(isRunning = false, isDone = true)
@@ -125,7 +143,7 @@ class TransferServer(private val context: Context) {
                 Result.success(saved)
             } catch (e: Exception) {
                 Logger.e("TransferServer failed", e)
-                partial?.delete()   // لا تترك ملفًا ناقصًا
+                partial?.delete()
                 _progress.value = _progress.value.copy(
                     isRunning = false,
                     errorMessage = e.message ?: "Unknown error"
@@ -134,37 +152,28 @@ class TransferServer(private val context: Context) {
             } finally {
                 try { socket?.close() } catch (_: IOException) {}
                 try { server?.close() } catch (_: IOException) {}
+                if (token == SessionToken.current) SessionToken.regenerate()
             }
         }
 
-    /** هل وصل الاتصال عبر واجهة Wi-Fi Direct (p2p)؟ الرابط نفسه مصادَق عليه بقبول الطرفين. */
     private fun isP2pLink(s: Socket): Boolean = try {
         NetworkInterface.getByInetAddress(s.localAddress)?.name?.contains("p2p", ignoreCase = true) == true
     } catch (_: Exception) { false }
 
-    /**
-     * يقبل فقط عناوين الشبكة المحلية. ثم: إمّا واجهة p2p، أو توكن صحيح وغير منتهي.
-     * يرجع null عند الرفض.
-     */
-    private fun handshake(s: Socket, token: String): Pair<DataInputStream, DataOutputStream>? = try {
+    private fun handshake(s: Socket, token: String): TransferProtocol.Session? = try {
         val a = s.inetAddress
         if (!(a.isSiteLocalAddress || a.isLinkLocalAddress || a.isLoopbackAddress)) {
             null
         } else {
             s.soTimeout = Constants.HANDSHAKE_TIMEOUT_MS.toInt()
-            val input = TransferProtocol.wrapIn(s.getInputStream())
-            val out = TransferProtocol.wrapOut(s.getOutputStream())
-            val got = TransferProtocol.readHello(input)
-            val fresh = token != SessionToken.current || !SessionToken.isExpired()
-            val tokenOk = got != null && got.isNotEmpty() && fresh &&
-                MessageDigest.isEqual(got.toByteArray(), token.toByteArray())
-            val ok = got != null && (tokenOk || isP2pLink(s))
-            out.writeByte(if (ok) 1 else 0)
-            out.flush()
-            if (ok) {
-                s.soTimeout = Constants.SOCKET_TIMEOUT_MS.toInt()
-                Pair(input, out)
-            } else null
+            val cands = mutableListOf<String>()
+            val live = token != SessionToken.current || !SessionToken.isExpired()
+            if (token.isNotEmpty() && live) cands.add(token)
+            if (isP2pLink(s)) cands.add(TransferProtocol.P2P_PSK)
+            val session = if (cands.isEmpty()) null
+            else TransferProtocol.serverHandshake(s.getInputStream(), s.getOutputStream(), cands)
+            if (session != null) s.soTimeout = Constants.SOCKET_TIMEOUT_MS.toInt()
+            session
         }
     } catch (_: Exception) { null }
 
