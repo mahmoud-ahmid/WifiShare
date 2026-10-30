@@ -1,8 +1,11 @@
 package com.example.wifishare.ui.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
@@ -35,6 +38,44 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
         binding.cardHowItWorks.setOnClickListener { showGuide() }
         refreshPermissionState()
+
+        pressEffect(binding.cardSend)
+        pressEffect(binding.cardReceive)
+        pressEffect(binding.cardHowItWorks)
+        animateEntrance()
+    }
+
+    /** ظهور متتابع للعناصر عند فتح الشاشة. */
+    private fun animateEntrance() {
+        val views = listOf(
+            binding.tvWelcome, binding.tvSubtitle, binding.cardHero,
+            binding.cardSend, binding.cardReceive, binding.cardHowItWorks
+        )
+        views.forEachIndexed { i, v ->
+            v.alpha = 0f
+            v.translationY = 48f
+            v.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setStartDelay(70L * i)
+                .setDuration(420L)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+        }
+    }
+
+    /** تأثير ضغط: تصغير خفيف أثناء اللمس (لا يمنع النقر). */
+    @SuppressLint("ClickableViewAccessibility")
+    private fun pressEffect(v: View) {
+        v.setOnTouchListener { view, e ->
+            when (e.actionMasked) {
+                MotionEvent.ACTION_DOWN ->
+                    view.animate().scaleX(0.96f).scaleY(0.96f).setDuration(90L).start()
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL ->
+                    view.animate().scaleX(1f).scaleY(1f).setDuration(140L).start()
+            }
+            false
+        }
     }
 
     override fun onResume() { super.onResume(); refreshPermissionState() }

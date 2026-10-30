@@ -228,4 +228,6 @@
     <string name="send_find_connecting_to">جارٍ الاتصال بـ %1$s...</string>
     <string name="send_find_connected">تم الاتصال! جارٍ بدء النقل...</string>
     <string name="send_find_failed">خطأ: %1$s</string>
+    <string name="home_hero_title">جاهز للمشاركة</string>
+    <string name="home_hero_sub">قرّب هاتفين وأرسل أي شيء بسرعة</string>
 </resources>

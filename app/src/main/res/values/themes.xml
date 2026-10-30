@@ -11,6 +11,8 @@
         <item name="colorOnSurface">@color/on_surface</item>
         <item name="colorSurfaceVariant">@color/surface_variant</item>
         <item name="colorOutline">@color/button_outline</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.WifiShare.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.WifiShare.Large</item>
         <item name="android:colorBackground">@color/background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
@@ -193,5 +195,13 @@
         <item name="colorOnSecondary">#FFFFFF</item>
         <item name="colorSurface">#99000000</item>
         <item name="colorOnSurface">#FFFFFF</item>
+    </style>
+    <style name="ShapeAppearance.WifiShare.Medium" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+    <style name="ShapeAppearance.WifiShare.Large" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">28dp</item>
     </style>
 </resources>

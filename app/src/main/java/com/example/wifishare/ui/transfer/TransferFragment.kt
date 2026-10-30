@@ -34,6 +34,8 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>({ i, p, a -> Frag
         requireArguments().getString(ARG_TOKEN).orEmpty()
     }
 
+    private var cancelBtn: View? = null
+
     private val viewModel: TransferViewModel by viewModels {
         TransferViewModel.Factory(
             application = requireActivity().application,
@@ -67,7 +69,16 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>({ i, p, a -> Frag
         else getString(R.string.transfer_waiting)
 
         binding.btnPick.isVisible = direction == TransferDirection.SEND
-        binding.btnCancel.setOnClickListener { viewModel.cancel() }
+        // زر الإلغاء يُنشأ من الكود (لا يعتمد على ملف الواجهة)
+        val cancel = com.google.android.material.button.MaterialButton(requireContext()).apply {
+            text = getString(android.R.string.cancel)
+            visibility = View.GONE
+            setOnClickListener { viewModel.cancel() }
+        }
+        (binding.btnDone.parent as android.view.ViewGroup).let { parent ->
+            parent.addView(cancel, parent.indexOfChild(binding.btnDone))
+        }
+        cancelBtn = cancel
         binding.btnPick.setOnClickListener {
             pickFilesLauncher.launch(arrayOf("*/*"))
         }
@@ -101,7 +112,7 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>({ i, p, a -> Frag
     }
 
     private fun render(p: TransferProgress) {
-        binding.btnCancel.isVisible = p.isRunning
+        cancelBtn?.isVisible = p.isRunning
         binding.progress.progress = p.percent
         binding.tvPercent.text = "${p.percent}%"
 

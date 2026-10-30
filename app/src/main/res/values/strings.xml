@@ -228,4 +228,6 @@
     <string name="send_find_connecting_to">Connecting to %1$s...</string>
     <string name="send_find_connected">Connected! Starting transfer...</string>
     <string name="send_find_failed">Error: %1$s</string>
+    <string name="home_hero_title">Ready to share</string>
+    <string name="home_hero_sub">Bring two phones close and send anything, fast</string>
 </resources>
